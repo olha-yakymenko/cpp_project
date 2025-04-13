@@ -10,4 +10,5 @@ public:
     void spread() override;
     Toadstool* clone() const override;
     std::string toString() const override;
+    void collision(Organism* other) override;
 };

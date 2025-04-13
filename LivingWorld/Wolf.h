@@ -15,4 +15,5 @@ public:
     Animal* clone() const override;
     std::string toString() const override;
     void move(int dx, int dy) override;
+    void collision(Organism* other) override;
 };

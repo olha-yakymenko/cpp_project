@@ -10,4 +10,5 @@ public:
     void spread() override;
     Dandelion* clone() const override;
     std::string toString() const override;
+    void collision(Organism* other) override;
 };

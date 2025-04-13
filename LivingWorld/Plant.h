@@ -43,5 +43,5 @@ public:
     virtual void spread() override;
     virtual std::string toString() const override;
     virtual Organism* clone() const override;  // Typ zwrotny zmieniony na Organism*
-
+    void collision(Organism* other) override;
 };

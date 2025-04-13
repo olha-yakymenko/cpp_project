@@ -31,6 +31,8 @@ Toadstool::Toadstool()
 }
 
 void Toadstool::spread() {
+    if (getLiveLength() <= 0) return;
+
     if (getWorld() == nullptr) {
         std::cerr << "World is not initialized!" << std::endl;
         return;
@@ -71,14 +73,15 @@ std::string Toadstool::toString() const {
 }
 
 void Toadstool::collision(Organism* attacker) {
-    std::cout << "Organism at " << attacker->getPosition().toString()
-              << " ate a Toadstool and died!" << std::endl;
+    if (getLiveLength() <= 0) return;
 
-    // Zabij organizm, który zjada muchomora
-    attacker->setLiveLength(0);
-
-    // Możesz też usunąć muchomora (jeśli ma być zjadany)
-    this->setLiveLength(0);
+    std::string species = attacker->getSpecies();
+    if (species == "Grass" or species=="Dandelion") {
+        
+    } else{
+    std::cout << attacker->toString() << " at position " << attacker->getPosition().toString()
+              << " ate a Toadstool!" << this->getPosition().toString() << std::endl;
+    this->setLiveLength(0); 
+    } // Muchomor umiera po zjedzeniu
 }
-
-
+// Sheep at (5, 1) at position (5, 1) ate a Toadstool!(5, 0)

@@ -100,41 +100,38 @@ std::string Sheep::toString() const {
 //     setPosition(newPos);  // Ustawiamy nową pozycję owcy
 // }
 
+void Sheep::collision(Organism* other) {
+    if (getLiveLength() <= 0) return;
+
+    if (other == nullptr) return;
+
+    std::string species = other->getSpecies();
+
+    if (species == "Grass") {
+        std::cout << "Sheep at " << getPosition().toString() << " eats grass!" << std::endl;
+        setPower(getPower() + other->getPower());
+    } else if (species == "Toadstool") {
+        std::cout << "TUTAJ";
+        std::cout << "Sheep at " << getPosition().toString() << " eats poisonous mushroom and dies!" << std::endl;
+        setLiveLength(0);  // Owca umiera
+    } else if (species == "Wolf") {
+        std::cout << "Sheep at " << getPosition().toString() << " was eaten by a wolf!" << std::endl;
+        setLiveLength(0);  // Owca umiera
+    }
+}
 
 void Sheep::move(int dx, int dy) {
-    Position prevPos = getPosition();  // Zapamiętujemy poprzednią pozycję
+    if (getLiveLength() <= 0) return;
 
-    Position newPos = getPosition();
-    newPos.move(dx, dy);  // Przemieszczamy owcę
+    Position prevPos = getPosition();
+    Position newPos = prevPos;
+    newPos.move(dx, dy);
 
     if (world != nullptr) {
-        // Sprawdzamy, co jest na nowej pozycji
-        Organism* organismAtNewPos = world->getOrganismFromPosition(newPos);
-
-        // Jeśli na nowej pozycji znajduje się trawa, to owca ją zjada
-        if (organismAtNewPos != nullptr && organismAtNewPos->getSpecies() == "Grass") {
-            std::cout << "Sheep at " << newPos.toString() << " eats grass!" << std::endl;
-            world->removeOrganismAtPosition(newPos);  // Usuwamy trawę z planszy
-        }
-
-        // Sprawdzamy sąsiednie pozycje (4 kierunki)
-        for (int i = -1; i <= 1; ++i) {
-            for (int j = -1; j <= 1; ++j) {
-                if (i == 0 && j == 0) continue;  // Pomijamy centralną pozycję (tę, na której jest owca)
-
-                Position neighborPos = newPos;
-                neighborPos.move(i, j);  // Przesuwamy się do sąsiedniej pozycji
-
-                // Sprawdzamy, czy w sąsiedniej pozycji znajduje się trawa
-                Organism* organismAtNeighbor = world->getOrganismFromPosition(neighborPos);
-                if (organismAtNeighbor != nullptr && organismAtNeighbor->getSpecies() == "Grass") {
-                    std::cout << "Sheep at " << newPos.toString() << " eats grass at neighboring position " << neighborPos.toString() << "!" << std::endl;
-                    world->removeOrganismAtPosition(neighborPos);  // Usuwamy trawę z sąsiedniej pozycji
-                    break;  // Owca może jeść tylko jedną trawę, więc przerywamy pętlę
-                }
-            }
-        }
+        Organism* target = world->getOrganismFromPosition(newPos);
+        collision(target);  // wykonaj zderzenie (np. zjedzenie, śmierć)
+        setPosition(newPos);  // ruszamy owcę
+    } else {
+        setPosition(newPos);
     }
-
-    setPosition(newPos);  // Ustawiamy nową pozycję owcy
 }

@@ -656,6 +656,7 @@
 #include <cstdlib>
 #include "Dandelion.h"
 #include "Wolf.h"
+#include "Toadstool.h"
 
 World::World(int x, int y) : worldX(x), worldY(y) {}
 
@@ -719,6 +720,154 @@ void World::addOrganism(Organism* organism) {
 //     turn++;  // Zwiększamy numer tury
 // }
 
+// void World::makeTurn() {
+//     std::vector<Position> newPositions;
+//     int numberOfNewPositions;
+//     int randomIndex;
+
+//     srand(time(0));
+
+//     // Przechodzimy przez wszystkie organizmy w świecie
+//     for (auto& org : organisms) {
+//         if (dynamic_cast<Animal*>(org)) { // Tylko zwierzęta się poruszają
+//             Animal* animal = dynamic_cast<Animal*>(org);
+//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
+//             numberOfNewPositions = newPositions.size();
+//             if (numberOfNewPositions > 0) {
+//                 randomIndex = rand() % numberOfNewPositions;
+//                 animal->move(newPositions[randomIndex].getX() - animal->getPosition().getX(),
+//                             newPositions[randomIndex].getY() - animal->getPosition().getY());
+//             }
+//         } 
+//         else if (dynamic_cast<Plant*>(org)) {  // Jeśli organizm jest trawą
+//             Plant* plant = dynamic_cast<Plant*>(org);
+//             plant->spread();  // Trawa rozprzestrzenia się
+//         }
+
+//     }
+
+//     turn++;  // Zwiększamy numer tury
+// }
+
+// void World::makeTurn() {
+//     std::vector<Position> newPositions;
+//     int numberOfNewPositions;
+//     int randomIndex;
+
+//     srand(time(0));
+
+//     // Wektor tymczasowy, żeby nie iterować po usuwanych organizmach
+//     std::vector<Organism*> currentOrganisms = organisms;
+
+//     // Pierwszy etap - ruch organizmów
+//     for (auto& org : currentOrganisms) {
+//         if (org->getLiveLength() <= 0) continue;  // Pomijamy martwe organizmy
+
+//         if (dynamic_cast<Animal*>(org)) {
+//             Animal* animal = dynamic_cast<Animal*>(org);
+
+//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
+//             numberOfNewPositions = newPositions.size();
+
+//             if (numberOfNewPositions > 0) {
+//                 randomIndex = rand() % numberOfNewPositions;
+//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
+//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
+//                 animal->move(dx, dy);
+//             }
+//         } else if (dynamic_cast<Plant*>(org)) {
+//             Plant* plant = dynamic_cast<Plant*>(org);
+//             plant->spread();  // np. trawa
+//         }
+//     }
+
+//     // Drugi etap - sprawdzanie kolizji na tej samej pozycji i sąsiednich pozycjach
+//     for (auto& org1 : currentOrganisms) {
+//         if (org1->getLiveLength() <= 0) continue;  // Pomijamy martwe organizmy
+
+//         // Sprawdzamy sąsiednie pozycje (w tym samą pozycję)
+//         for (auto& org2 : currentOrganisms) {
+//             if (org1 == org2) continue;  // Pomijamy porównanie organizmu z samym sobą
+//             if (org2->getLiveLength() <= 0) continue;  // Pomijamy martwe organizmy
+
+//             // Sprawdzamy, czy organizmy znajdują się na tej samej pozycji lub sąsiednich
+//             Position pos1 = org1->getPosition();
+//             Position pos2 = org2->getPosition();
+
+//             // Jeśli organizmy są na tej samej pozycji lub sąsiednich pozycjach (sąsiednie to +1/-1 w osi X lub Y)
+//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+//                 org1->collision(org2);  // Wywołujemy metodę collision dla pary organizmów
+//             }
+//         }
+//     }
+
+//     // 🧹 Usuwamy martwe organizmy
+//     removeDeadOrganisms();
+
+//     turn++;  // Kolejna tura
+// }
+
+// void World::makeTurn() {
+//     std::vector<Position> newPositions;
+//     int numberOfNewPositions;
+//     int randomIndex;
+
+//     srand(time(0));
+
+//     for (Organism* org : organisms) {
+//         if (org->getLiveLength() > 0) {
+//             org->setPower(org->getPower() + 1);
+//             org->setLiveLength(org->getLiveLength() - 1);
+//         }
+//     }    
+
+//     // Pierwszy etap - ruch organizmów (zwierzęta) i rozprzestrzenianie (rośliny)
+//     for (Organism* org : organisms) {
+//         if (org->getLiveLength() <= 0) continue;
+
+//         if (Animal* animal = dynamic_cast<Animal*>(org)) {
+//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
+//             numberOfNewPositions = newPositions.size();
+
+//             if (numberOfNewPositions > 0) {
+//                 randomIndex = rand() % numberOfNewPositions;
+//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
+//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
+//                 animal->move(dx, dy);
+//             }
+
+//             if (animal->getLiveLength() <= 0) continue;
+//         }
+//         else if (Plant* plant = dynamic_cast<Plant*>(org)) {
+//             plant->spread();
+//         }
+//     }
+
+//     // Drugi etap - kolizje
+//     for (Organism* org1 : organisms) {
+//         if (org1->getLiveLength() <= 0) continue;
+
+//         for (Organism* org2 : organisms) {
+//             if (org1 == org2 || org2->getLiveLength() <= 0) continue;
+
+//             Position pos1 = org1->getPosition();
+//             Position pos2 = org2->getPosition();
+
+//             // Sprawdzenie, czy organizmy są w tej samej lub sąsiednich pozycjach
+//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+//                 org1->collision(org2);
+//                 if (org1->getLiveLength() <= 0) break;
+//             }
+//         }
+//     }
+
+//     // Usuwamy martwe organizmy
+//     removeDeadOrganisms();
+
+//     // Zwiększamy licznik tury
+//     turn++;
+// }
+
 void World::makeTurn() {
     std::vector<Position> newPositions;
     int numberOfNewPositions;
@@ -726,26 +875,65 @@ void World::makeTurn() {
 
     srand(time(0));
 
-    // Przechodzimy przez wszystkie organizmy w świecie
-    for (auto& org : organisms) {
-        if (dynamic_cast<Animal*>(org)) { // Tylko zwierzęta się poruszają
-            Animal* animal = dynamic_cast<Animal*>(org);
-            newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-            numberOfNewPositions = newPositions.size();
-            if (numberOfNewPositions > 0) {
-                randomIndex = rand() % numberOfNewPositions;
-                animal->move(newPositions[randomIndex].getX() - animal->getPosition().getX(),
-                            newPositions[randomIndex].getY() - animal->getPosition().getY());
-            }
-        } 
-        else if (dynamic_cast<Plant*>(org)) {  // Jeśli organizm jest trawą
-            Plant* plant = dynamic_cast<Plant*>(org);
-            plant->spread();  // Trawa rozprzestrzenia się
+    // 🔄 Aktualizacja statystyk wszystkich organizmów
+    for (Organism* org : organisms) {
+        if (org->getLiveLength() > 0) {
+            org->setPower(org->getPower() + 1);
+            org->setLiveLength(org->getLiveLength() - 1);
         }
-
     }
 
-    turn++;  // Zwiększamy numer tury
+    // 🧠 Sortowanie organizmów wg initiative (priorytetu) i siły (power)
+    std::sort(organisms.begin(), organisms.end(), [](Organism* a, Organism* b) {
+        if (a->getInitiative() != b->getInitiative())
+            return a->getInitiative() > b->getInitiative();
+        return a->getPower() > b->getPower();
+    });
+
+    // 🚶‍♂️ Pierwszy etap - ruch i rozprzestrzenianie
+    for (Organism* org : organisms) {
+        if (org->getLiveLength() <= 0) continue;
+
+        if (Animal* animal = dynamic_cast<Animal*>(org)) {
+            newPositions = getVectorOfFreePositionsAround(animal->getPosition());
+            numberOfNewPositions = newPositions.size();
+
+            if (numberOfNewPositions > 0) {
+                randomIndex = rand() % numberOfNewPositions;
+                int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
+                int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
+                animal->move(dx, dy);
+            }
+
+            if (animal->getLiveLength() <= 0) continue;
+        }
+        else if (Plant* plant = dynamic_cast<Plant*>(org)) {
+            plant->spread();
+        }
+    }
+
+    // 💥 Drugi etap - kolizje
+    for (Organism* org1 : organisms) {
+        if (org1->getLiveLength() <= 0) continue;
+
+        for (Organism* org2 : organisms) {
+            if (org1 == org2 || org2->getLiveLength() <= 0) continue;
+
+            Position pos1 = org1->getPosition();
+            Position pos2 = org2->getPosition();
+
+            if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+                org1->collision(org2);
+                if (org1->getLiveLength() <= 0) break;
+            }
+        }
+    }
+
+    // 🧹 Trzeci etap - czyszczenie martwych
+    removeDeadOrganisms();
+
+    // ⏭️ Zwiększamy licznik tury
+    turn++;
 }
 
 
@@ -877,7 +1065,9 @@ void World::readWorld(std::string fileName) {
                 org = new Dandelion(power, pos, species, this);
             } else if (species == "Wolf") {
                 org = new Wolf(power, pos, species, this);
-            } else {
+            }else if (species == "Toadstool") {
+                org = new Toadstool(power, pos, species, this);
+            }  else {
                 std::cerr << "Unknown species: " << species << std::endl;
                 continue; // skip unknown
             }
@@ -937,6 +1127,18 @@ void World::removeOrganismAtPosition(Position pos) {
             std::cout << "Removing organism at: " << pos.toString() << std::endl;  // Debugowanie
             organisms.erase(it);  // Usuwamy organizm z planszy
             break;
+        }
+    }
+}
+
+
+void World::removeDeadOrganisms() {
+    for (auto it = organisms.begin(); it != organisms.end(); ) {
+        if ((*it)->getLiveLength() <= 0) {
+            std::cout << (*it)->getSpecies() << " at " << (*it)->getPosition().toString() << " has died.\n";
+            it = organisms.erase(it);  // usuń z wektora i przejdź do kolejnego
+        } else {
+            ++it;
         }
     }
 }

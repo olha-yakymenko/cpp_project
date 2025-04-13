@@ -24,4 +24,5 @@ public:
     void spread() override;
     Grass* clone() const override;
     std::string toString() const override;
+    void collision(Organism* other) override;
 };

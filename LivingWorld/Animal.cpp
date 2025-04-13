@@ -43,3 +43,7 @@ std::string Animal::toString() const {
     return species + " at (" + std::to_string(position.getX()) + ", " + std::to_string(position.getY()) + ")";
 }
 
+
+void Animal::collision(Organism* other) {
+  
+}

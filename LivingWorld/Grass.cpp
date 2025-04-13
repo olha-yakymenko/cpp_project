@@ -81,6 +81,8 @@ Grass::Grass()
 // }
 
 void Grass::spread() {
+    if (getLiveLength() <= 0) return;
+
     if (getWorld() == nullptr) {
         std::cerr << "World is not initialized!" << std::endl;
         return;
@@ -120,4 +122,9 @@ std::string Grass::toString() const {
     return "Grass at " + getPosition().toString();
 }
 
+void Grass::collision(Organism* other) {
+    if (getLiveLength() <= 0) return;
+
+    this->setLiveLength(0);
+}
 

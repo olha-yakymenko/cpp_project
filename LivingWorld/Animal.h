@@ -47,6 +47,7 @@ public:
     virtual void spread() override;
     virtual Animal* clone() const override;
     virtual std::string toString() const override;
+    void collision(Organism* other) override;
 
 protected:
     Position previousPosition;  // Zapamiętywanie poprzedniej pozycji

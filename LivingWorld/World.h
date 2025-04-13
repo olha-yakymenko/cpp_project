@@ -130,6 +130,7 @@ public:
 	Organism* getOrganismAt(const Position& pos) const;
 	Position findEmptyAdjacentPosition(Position position);
 	void removeOrganismAtPosition(Position pos);
+	void removeDeadOrganisms();
 	
 	Organism* getOrganismFromPosition(Position pos);
 };

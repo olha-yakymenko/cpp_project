@@ -23,3 +23,8 @@ Organism* Plant::clone() const {
 std::string Plant::toString() const {
     return species + " at (" + std::to_string(position.getX()) + ", " + std::to_string(position.getY()) + ")";
 }
+
+
+void Plant::collision(Organism* other) {
+}
+

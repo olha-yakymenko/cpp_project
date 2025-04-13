@@ -377,21 +377,25 @@
 
 
 
-
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "Position.h"
 #include "Organism.h"
 #include "Plant.h"
 #include "Animal.h"
 #include "Grass.h"
 #include "Sheep.h"
-#include "Dandelion.h"  // Include Dandelion
-#include "Wolf.h"       // Include Wolf
+#include "Dandelion.h"
+#include "Wolf.h"
 #include "World.h"
+#include "Toadstool.h"
 
 using namespace std;
 
 int main() {
+    srand(time(0));  // Inicjalizacja generatora losowego
+
     // Position examples
     Position p1;
     Position p2{ 1, 1 };
@@ -406,6 +410,8 @@ int main() {
     // Dandelion example
     Position pDandelion{ 2, 2 };
     Dandelion dandelion{ 2, pDandelion, nullptr };
+    Toadstool toadstool {3, 5, nullptr};
+    
 
     // Print initial states
     cout << "Initial state:" << endl;
@@ -414,6 +420,7 @@ int main() {
     cout << grass2.toString() << endl;
     cout << sheep2.toString() << endl;
     cout << dandelion.toString() << endl;
+    cout << toadstool.toString() << endl;
 
     // Move Plants and Animals
     grass.move(3, 4);
@@ -447,12 +454,27 @@ int main() {
     world.addOrganism(&grassW2);
     world.addOrganism(&sheepW1);
     world.addOrganism(&sheepW2);
-    world.addOrganism(&dandelionW);  // Adding dandelion to world
-    world.addOrganism(&wolfW);       // Adding wolf to world
+    world.addOrganism(&dandelionW);
+    world.addOrganism(&wolfW);
+    world.addOrganism(&toadstool);
+
+    // Dodaj dodatkowe wilki
+    for (int i = 0; i < 5; ++i) {
+        Position randomWolfPos{ rand() % 10, rand() % 10 };
+        Wolf* newWolf = new Wolf{ randomWolfPos, &world };
+        world.addOrganism(newWolf);
+    }
+
+    // Dodaj dodatkowe owce
+    for (int i = 0; i < 10; ++i) {
+        Position randomSheepPos{ rand() % 10, rand() % 10 };
+        Sheep* newSheep = new Sheep{ randomSheepPos, &world };
+        world.addOrganism(newSheep);
+    }
 
     // Adding more grass to the world
     for (int i = 0; i < 50; ++i) {
-        Position randomPos{ rand() % 10, rand() % 10 };  // Random positions between (0,0) and (9,9)
+        Position randomPos{ rand() % 10, rand() % 10 };
         Grass* newGrass = new Grass{ 3, randomPos, &world };
         world.addOrganism(newGrass);
     }
@@ -467,12 +489,12 @@ int main() {
     cout << "Turn 0:" << endl;
     cout << world.toString() << endl;
 
-    // Make Turn 1
+    // Turn 1
     world.makeTurn();
     cout << "Turn 1:" << endl;
     cout << world.toString() << endl;
 
-    // Make Turn 2
+    // Turn 2
     world.makeTurn();
     cout << "Turn 2:" << endl;
     cout << world.toString() << endl;
@@ -480,12 +502,12 @@ int main() {
     // Save the world state to a file
     world.writeWorld("world.bin");
 
-    // Make Turn 3
+    // Turn 3
     world.makeTurn();
     cout << "Turn 3:" << endl;
     cout << world.toString() << endl;
 
-    // Read world state from file and return to Turn 2 state
+    // Load previous world state
     world.readWorld("world.bin");
     cout << "Back to Turn 2:" << endl;
     cout << world.toString() << endl;

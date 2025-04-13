@@ -38,39 +38,49 @@ std::string Wolf::toString() const {
 }
 
 void Wolf::move(int dx, int dy) {
-    Position prevPos = getPosition();  // Zapamiętujemy poprzednią pozycję
+    if (getLiveLength() <= 0) return;
 
     Position newPos = getPosition();
-    newPos.move(dx, dy);  // Przemieszczamy owcę
+    newPos.move(dx, dy);  // Przesuwamy się
 
     if (world != nullptr) {
-        // Sprawdzamy, co jest na nowej pozycji
         Organism* organismAtNewPos = world->getOrganismFromPosition(newPos);
 
-        // Jeśli na nowej pozycji znajduje się trawa, to owca ją zjada
-        if (organismAtNewPos != nullptr && organismAtNewPos->getSpecies() == "Sheep") {
-            std::cout << "Wolf at " << newPos.toString() << " eats sheep!" << std::endl;
-            world->removeOrganismAtPosition(newPos);  // Usuwamy trawę z planszy
-        }
-
-        // Sprawdzamy sąsiednie pozycje (4 kierunki)
-        for (int i = -1; i <= 1; ++i) {
-            for (int j = -1; j <= 1; ++j) {
-                if (i == 0 && j == 0) continue;  // Pomijamy centralną pozycję (tę, na której jest owca)
-
-                Position neighborPos = newPos;
-                neighborPos.move(i, j);  // Przesuwamy się do sąsiedniej pozycji
-
-                // Sprawdzamy, czy w sąsiedniej pozycji znajduje się trawa
-                Organism* organismAtNeighbor = world->getOrganismFromPosition(neighborPos);
-                if (organismAtNeighbor != nullptr && organismAtNeighbor->getSpecies() == "Sheep") {
-                    std::cout << "Wolf at " << newPos.toString() << " eats sheep at neighboring position " << neighborPos.toString() << "!" << std::endl;
-                    world->removeOrganismAtPosition(neighborPos);  // Usuwamy trawę z sąsiedniej pozycji
-                    break;  // Owca może jeść tylko jedną trawę, więc przerywamy pętlę
-                }
-            }
+        // Jeśli coś jest na nowej pozycji – kolizja!
+        if (organismAtNewPos != nullptr) {
+            this->collision(organismAtNewPos);  // Wilk reaguje na zderzenie
+        } else {
+            setPosition(newPos);  // Jeśli pusto, po prostu się przemieść
         }
     }
+}
 
-    setPosition(newPos);  // Ustawiamy nową pozycję owcy
+
+
+void Wolf::collision(Organism* other) {
+    if (other == nullptr) return;
+
+    std::string species = other->getSpecies();
+
+    if (species == "Sheep") {
+        // Wilk zjada owcę
+        std::cout << "Wolf at " << getPosition().toString() << " eats sheep at " << other->getPosition().toString() << "!" << std::endl;
+        setPower(getPower() + other->getPower());  // Wilk zwiększa swoją moc
+        setPosition(other->getPosition());  // Wilk przejmuje pozycję owcy
+    } 
+
+    else if (species == "Toadstool") {
+        // Wilk je trujące grzyby (jeśli tak założyliśmy w mechanice)
+        std::cout << "Wolf at " << getPosition().toString() << " eats poisonous mushroom and dies!" << other->getPosition().toString() << std::endl;
+        setLiveLength(0);  // Wilk umiera po zjedzeniu trującego grzyba
+    } 
+    else if (species == "Wolf") {
+        // Wilk spotyka innego wilka (można dodać odpowiednią reakcję, np. walka lub ignorowanie)
+        std::cout << "Wolf at " << getPosition().toString() << " encounters another wolf!" << std::endl;
+        // Można dodać inne reakcje na spotkanie z innym wilkiem, np. walkę
+    }
+    else {
+        // W przypadku innych organizmów, wilk nic nie robi
+        std::cout << "Wolf at " << getPosition().toString() << " encounters " << species << ", but does nothing." << std::endl;
+    }
 }

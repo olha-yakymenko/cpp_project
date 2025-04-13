@@ -31,6 +31,8 @@ Dandelion::Dandelion()
 }
 
 void Dandelion::spread() {
+    if (getLiveLength() <= 0) return;
+
     if (getWorld() == nullptr) {
         std::cerr << "World is not initialized!" << std::endl;
         return;
@@ -63,11 +65,19 @@ void Dandelion::spread() {
 
 
 Dandelion* Dandelion::clone() const {
-    return new Dandelion(*this);
+   return new Dandelion(*this);
 }
 
 std::string Dandelion::toString() const {
     return "Dandelion at " + getPosition().toString();
+}
+
+
+
+void Dandelion::collision(Organism* other) {
+    if (getLiveLength() <= 0) return;
+
+    this->setLiveLength(0);
 }
 
 
