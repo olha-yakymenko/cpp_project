@@ -185,6 +185,7 @@
 
 #include "Position.h"
 #include <string>
+#include <SDL2/SDL.h>
 
 class World;  // Forward declaration
 
@@ -243,6 +244,8 @@ public:
     virtual void decreaseLife();
 
 	virtual void collision(Organism* other) = 0;
+  
+  virtual void draw(SDL_Renderer* renderer) = 0;
 
 
 protected:

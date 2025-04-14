@@ -2,10 +2,22 @@
 #include "World.h"
 
 Animal::Animal(int power, Position position, World* world)
-    : Organism(power, position, "Animal", 5, 0, 2, 'A', world) {}
+    : Organism(power, position, "Animal", 5, 0, 2, 'A', world) {
+    // Inicjalizowanie dodatkowych zmiennych
+    x = position.getX();  // Jeśli masz gettery w klasie Position
+    yn = position.getY();
+    wcwidth = 50;   // Przykładowa szerokość
+    height = 100;   // Przykładowa wysokość
+}
 
-Animal::Animal() : Organism(0, Position(0, 0), "Animal", 5, 0, 2, 'A', nullptr) {}
-
+// Konstruktor domyślny
+Animal::Animal() : Organism(0, Position(0, 0), "Animal", 5, 0, 2, 'A', nullptr) {
+    // Inicjalizowanie zmiennych domyślnych
+    x = 100;        // Domyślna pozycja X
+    yn = 200;       // Domyślna pozycja Y
+    wcwidth = 50;   // Domyślna szerokość
+    height = 100;   // Domyślna wysokość
+}
 // void Animal::move(int dx, int dy) {
 //     // Ruch dla zwierzęcia
 //     position.setX(position.getX() + dx);
@@ -85,4 +97,14 @@ void Animal::reproduce(Animal* partner) {
     // Osłabienie rodziców po rozmnożeniu
     this->setPower(this->getPower() / 2);  // Pierwszy rodzic
     partner->setPower(partner->getPower() / 2);  // Drugi rodzic
+}
+
+
+void Animal::draw(SDL_Renderer* renderer) {
+    // Ustawienie koloru dla zwierzęcia (np. niebieski)
+    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+
+    // Rysowanie prostokąta reprezentującego zwierzę
+    SDL_Rect rect = {this->x, this->yn, this->wcwidth, this->height};  // Teraz działa, ponieważ 'this' odnosi się do instancji klasy
+    SDL_RenderFillRect(renderer, &rect);
 }

@@ -517,10 +517,178 @@
 
 
 
+// #include <SDL2/SDL.h>
+// #include <iostream>
+// #include <cstdlib>
+// #include <ctime>
+// #include "Position.h"
+// #include "Organism.h"
+// #include "Plant.h"
+// #include "Animal.h"
+// #include "Grass.h"
+// #include "Sheep.h"
+// #include "Dandelion.h"
+// #include "Wolf.h"
+// #include "World.h"
+// #include "Toadstool.h"
+
+// using namespace std;
+
+// // Funkcja do inicjalizacji SDL2
+// bool init(SDL_Window*& window, SDL_Renderer*& renderer) {
+//     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+//         cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
+//         return false;
+//     }
+    
+//     // Tworzenie okna
+//     window = SDL_CreateWindow("World Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+//     if (!window) {
+//         cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
+//         return false;
+//     }
+    
+//     // Tworzenie renderer'a
+//     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+//     if (!renderer) {
+//         cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
+//         return false;
+//     }
+
+//     return true;
+// }
+
+// // Funkcja do czyszczenia zasobów
+// void close(SDL_Window* window, SDL_Renderer* renderer) {
+//     SDL_DestroyRenderer(renderer);
+//     SDL_DestroyWindow(window);
+//     SDL_Quit();
+// }
+
+
+
+
+// int main() {
+//     srand(time(0));  // Inicjalizacja generatora losowego
+
+//     SDL_Window* window = nullptr;
+//     SDL_Renderer* renderer = nullptr;
+
+//     // Inicjalizuj SDL2
+//     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+//         cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
+//         return -1;
+//     }
+
+//     // Utwórz okno
+//     window = SDL_CreateWindow("World Simulation", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+//     if (!window) {
+//         cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
+//         SDL_Quit();
+//         return -1;
+//     }
+
+//     // Utwórz renderer
+//     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+//     if (!renderer) {
+//         cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
+//         SDL_DestroyWindow(window);
+//         SDL_Quit();
+//         return -1;
+//     }
+
+//     // Utwórz świat i organizmy
+//     World world;
+
+//     // Przykładowe dodanie organizmów do świata
+//     Position pos1{ 4, 5 };
+//     Grass grass{ 3, pos1, &world };
+//     world.addOrganism(&grass);
+
+//     // Dodanie innych organizmów
+//     Position posSheep{ 5, 5 };
+//     Sheep sheep{ posSheep, &world };
+//     world.addOrganism(&sheep);
+
+//     Position posWolf{ 6, 6 };
+//     Wolf wolf{ posWolf, &world };
+//     world.addOrganism(&wolf);
+
+//     Position posDandelion{ 7, 7 };
+//     Dandelion dandelion{ 2, posDandelion, &world };
+//     // world.addOrganism(&dandelion);
+
+//     // Ustawienia renderowania
+//     bool quit = false;
+//     SDL_Event e;
+
+//     // Liczba tur do wykonania w każdej iteracji
+//     int turnsPerFrame = 5;  // Liczba tur do wykonania na raz
+
+//     // Pętla główna aplikacji
+//     while (!quit) {
+//         // Obsługuje zdarzenia
+//         while (SDL_PollEvent(&e) != 0) {
+//             if (e.type == SDL_QUIT) {
+//                 quit = true;
+//             }
+//         }
+
+//         // Wyczyść ekran
+//         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // Biały kolor tła
+//         SDL_RenderClear(renderer);
+
+//         // Wykonaj kilka tur gry
+//         for (int i = 0; i < turnsPerFrame; ++i) {
+//             world.makeTurn(renderer);  // Wykonaj turę, przekazując renderer
+//         }
+
+//         // Rysowanie organizmów
+//         for (Organism* org : world.getOrganisms()) {
+//             if (org->getLiveLength() > 0) {
+//                 Position pos = org->getPosition();
+//                 SDL_Rect rect = { pos.getX() * 10, pos.getY() * 10, 10, 10 };
+
+//                 if (dynamic_cast<Grass*>(org)) {
+//                     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Zielony kolor dla trawy
+//                 }
+//                 else if (dynamic_cast<Sheep*>(org)) {
+//                     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // Biały kolor dla owcy
+//                 }
+//                 else if (dynamic_cast<Wolf*>(org)) {
+//                     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Czerwony kolor dla wilka
+//                 }
+//                 // else if (dynamic_cast<Dandelion*>(org)) {
+//                 //     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);  // Żółty kolor dla mlecza
+//                 // }
+
+//                 SDL_RenderFillRect(renderer, &rect);
+//             }
+//         }
+
+//         // Aktualizuj ekran
+//         SDL_RenderPresent(renderer);
+
+//         // Dodaj opóźnienie, aby gra nie działała za szybko
+//         SDL_Delay(100);
+//     }
+
+//     // Zamyka aplikację
+//     SDL_DestroyRenderer(renderer);
+//     SDL_DestroyWindow(window);
+//     SDL_Quit();
+
+//     return 0;
+// }
+
+
+
+
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 #include "Position.h"
 #include "Organism.h"
 #include "Plant.h"
@@ -534,6 +702,13 @@
 
 using namespace std;
 
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const int CELL_SIZE = 15;
+const int GRID_WIDTH = SCREEN_WIDTH / CELL_SIZE;
+const int GRID_HEIGHT = SCREEN_HEIGHT / CELL_SIZE;
+const int MAX_TURNS = 5;
+
 // Funkcja do inicjalizacji SDL2
 bool init(SDL_Window*& window, SDL_Renderer*& renderer) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -541,15 +716,15 @@ bool init(SDL_Window*& window, SDL_Renderer*& renderer) {
         return false;
     }
     
-    // Tworzenie okna
-    window = SDL_CreateWindow("World Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("World Simulator", SDL_WINDOWPOS_UNDEFINED, 
+                             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 
+                             SDL_WINDOW_SHOWN);
     if (!window) {
         cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
         return false;
     }
     
-    // Tworzenie renderer'a
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
         cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
         return false;
@@ -565,62 +740,126 @@ void close(SDL_Window* window, SDL_Renderer* renderer) {
     SDL_Quit();
 }
 
+// Funkcja do losowego generowania pozycji
+Position getRandomPosition() {
+    return {rand() % GRID_WIDTH, rand() % GRID_HEIGHT};
+}
+
+// Funkcja do dodawania organizmów do świata
+void populateWorld(World& world) {
+    // Dodaj trawy
+    for (int i = 0; i < 30; ++i) {
+        Grass* grass = new Grass(5, getRandomPosition(), &world);
+        world.addOrganism(grass);
+    }
+    
+    // Dodaj owce
+    for (int i = 0; i < 15; ++i) {
+        Sheep* sheep = new Sheep(getRandomPosition(), &world);
+        world.addOrganism(sheep);
+    }
+    
+    // Dodaj wilki
+    for (int i = 0; i < 5; ++i) {
+        Wolf* wolf = new Wolf(getRandomPosition(), &world);
+        world.addOrganism(wolf);
+    }
+    
+    // Dodaj mlecze
+    for (int i = 0; i < 10; ++i) {
+        Dandelion* dandelion = new Dandelion(3, getRandomPosition(), &world);
+        world.addOrganism(dandelion);
+    }
+    
+    // Dodaj muchomory
+    for (int i = 0; i < 5; ++i) {
+        Toadstool* toadstool = new Toadstool(4, getRandomPosition(), &world);
+        world.addOrganism(toadstool);
+    }
+}
+
+// Funkcja do renderowania organizmów
+void renderOrganisms(SDL_Renderer* renderer, World& world) {
+    for (Organism* org : world.getOrganisms()) {
+        if (org->getLiveLength() > 0) {
+            Position pos = org->getPosition();
+            SDL_Rect rect = {pos.getX() * CELL_SIZE, pos.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+            
+            if (dynamic_cast<Grass*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 34, 139, 34, 255);  // Zielony dla trawy
+            }
+            else if (dynamic_cast<Sheep*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // Biały dla owcy
+            }
+            else if (dynamic_cast<Wolf*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 139, 0, 0, 255);  // Ciemnoczerwony dla wilka
+            }
+            else if (dynamic_cast<Dandelion*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);  // Żółty dla mlecza
+            }
+            else if (dynamic_cast<Toadstool*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 160, 32, 240, 255);  // Fioletowy dla muchomora
+            }
+            
+            SDL_RenderFillRect(renderer, &rect);
+            SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);  // Ciemna obwódka
+            SDL_RenderDrawRect(renderer, &rect);
+        }
+    }
+}
+
+
 int main() {
     srand(time(0));  // Inicjalizacja generatora losowego
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
 
-    // Inicjalizuj SDL2
     if (!init(window, renderer)) {
-        cout << "Failed to initialize!" << endl;
+        close(window, renderer);
         return -1;
     }
 
-    // Utwórz świat i organizmy
     World world;
-
-    // Przykładowe dodanie organizmów do świata
-    Position pos1{ 4, 5 };
-    Grass grass{ 3, pos1, &world };
-    world.addOrganism(&grass);
-
-    // Ustawienia renderowania
+    populateWorld(world);
+    
     bool quit = false;
     SDL_Event e;
+    int turnCount = 0;
 
-    // Pętla główna aplikacji
-    while (!quit) {
-        // Obsługuje zdarzenia
+    // Główna pętla gry
+    while (!quit && turnCount < MAX_TURNS) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
-        // Wyczyść ekran
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Biały kolor tła
+        // Czyszczenie ekranu
+        SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
         SDL_RenderClear(renderer);
 
-        // Rysowanie organizmów (np. trawy)
-        for (Organism* org : world.getOrganisms()) {
-            if (org->getLiveLength() > 0) {
-                Position pos = org->getPosition();
-                SDL_Rect rect = { pos.getX() * 10, pos.getY() * 10, 10, 10 };
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Zielony kolor dla trawy
-                SDL_RenderFillRect(renderer, &rect);
+        // Wykonanie tur
+        for (int i = 0; i < MAX_TURNS; ++i) {
+            if (turnCount >= MAX_TURNS) {
+                quit = true;
+                break;
             }
+
+            world.makeTurn(renderer);  // przekazujemy renderer
+            turnCount++;
+            cout << "Turn: " << turnCount << " Organisms: " << world.getOrganisms().size() << endl;
         }
 
-        // Aktualizuj ekran
+        if (quit) break;
+
+        // Renderowanie
+        renderOrganisms(renderer, world);
         SDL_RenderPresent(renderer);
 
-        // Dodaj opóźnienie, aby gra nie działała za szybko
-        SDL_Delay(100);
+        SDL_Delay(200);  // Opóźnienie dla lepszej widoczności zmian
     }
 
-    // Zamyka aplikację
     close(window, renderer);
-
     return 0;
 }

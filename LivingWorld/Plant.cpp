@@ -1,9 +1,22 @@
 #include "Plant.h"
 
 Plant::Plant(int power, Position position, World* world)
-    : Organism(power, position, "Plant", 0, 0, 1, 'P', world) {}
+    : Organism(power, position, "Plant", 0, 0, 1, 'P', world) {
+    // Inicjalizowanie zmiennych dla rośliny
+    x = position.getX();  // Jeśli masz gettery w klasie Position
+    yn = position.getY();
+    wcwidth = 50;   // Przykładowa szerokość
+    height = 100;   // Przykładowa wysokość
+}
 
-Plant::Plant() : Organism(0, Position(0, 0), "Plant", 0, 0, 1, 'P', nullptr) {}
+// Konstruktor domyślny
+Plant::Plant() : Organism(0, Position(0, 0), "Plant", 0, 0, 1, 'P', nullptr) {
+    // Inicjalizowanie zmiennych domyślnych
+    x = 100;        // Domyślna pozycja X
+    yn = 200;       // Domyślna pozycja Y
+    wcwidth = 50;   // Domyślna szerokość
+    height = 100;   // Domyślna wysokość
+}
 
 void Plant::move(int dx, int dy) {
     Position newPos = getPosition();

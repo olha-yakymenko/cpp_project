@@ -33,8 +33,11 @@
 
 #pragma once
 #include "Organism.h"
+#include <SDL2/SDL.h>
 
 class Animal : public Organism {
+    private:
+    int x, yn, wcwidth, height; 
 public:
     // Konstruktor z parametrami
     Animal(int power, Position position, World* world);
@@ -52,6 +55,8 @@ public:
     // virtual ~Animal() = default;
     virtual std::pair<int, int> findBestMove() = 0;
     virtual void reproduce(Animal* partner) = 0;
+
+    void draw(SDL_Renderer* renderer) override;
 protected:
     Position previousPosition;  // Zapamiętywanie poprzedniej pozycji
 };

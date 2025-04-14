@@ -1,648 +1,3 @@
-// #include "World.h"
-// #include <fstream>
-// #include <algorithm>
-
-// string World::getOrganismFromPosition(int x, int y)
-// {	
-// 	for (Organism org : organisms)
-// 		if (org.getPosition().getX() == x && org.getPosition().getY() == y)
-// 			return org.getSpecies();
-// 	return "";
-// }
-
-// bool World::isPositionOnWorld(int x, int y)
-// {
-// 	return (x >= 0 && y >= 0 && x < getWorldX() && y < getWorldY());
-// }
-
-// bool World::isPositionFree(Position position) {
-// 	return this->getOrganismFromPosition(position.getX(), position.getY()).empty();
-// }
-
-// vector<Position> World::getVectorOfFreePositionsAround(Position position)
-// {	
-// 	int pos_x = position.getX(), pos_y = position.getY();
-// 	vector<Position> result;
-// 	for(int x = -1; x < 2; ++x)
-// 		for (int y = -1; y < 2; ++y)
-// 			if ((x != 0 || y != 0) && 
-// 				isPositionOnWorld(pos_x + x, pos_y + y)) {
-// 				result.push_back(Position(pos_x + x, pos_y + y));
-// 			}
-// 	auto iter = remove_if(result.begin(), result.end(),
-// 		[this](Position pos) {return !isPositionFree(pos); });
-// 	result.erase(iter, result.end());
-
-// 	return result;
-// }
-
-// World::World(int worldX, int worldY)
-// {
-// 	setWorldX(worldX);
-// 	setWorldY(worldY);
-// }
-
-// int World::getWorldX()
-// {
-// 	return this->worldX;
-// }
-
-// void World::setWorldX(int worldX)
-// {
-// 	this->worldX = worldX;
-// }
-
-// int World::getWorldY()
-// {
-// 	return this->worldY;
-// }
-
-// void World::setWorldY(int worldY)
-// {
-// 	this->worldY = worldY;
-// }
-
-// int World::getTurn()
-// {
-// 	return this->turn;
-// }
-
-// void World::addOrganism(Organism* organism)
-// {
-// 	this->organisms.push_back(*organism);
-// }
-
-// void World::makeTurn()
-// {
-// 	vector<Position> newPositions;
-// 	int numberOfNewPositions;
-// 	int randomIndex;
-
-// 	srand(time(0));
-// 	for (auto& org : organisms) {
-// 		newPositions = getVectorOfFreePositionsAround(org.getPosition());
-// 		numberOfNewPositions = newPositions.size();
-// 		if (numberOfNewPositions > 0) {
-// 			randomIndex = rand() % numberOfNewPositions;
-// 			org.setPosition(newPositions[randomIndex]);
-// 		}
-// 	}
-// 	turn++;
-// }
-
-// void World::writeWorld(string fileName)
-// {
-// 	fstream my_file;
-// 	my_file.open(fileName, ios::out | ios::binary);
-// 	if (my_file.is_open()) {
-// 		my_file.write((char*)&this->worldX, sizeof(int));
-// 		my_file.write((char*)&this->worldY, sizeof(int));
-// 		my_file.write((char*)&this->turn, sizeof(int));
-// 		int orgs_size = this->organisms.size();
-// 		my_file.write((char*)&orgs_size, sizeof(int));
-// 		for (int i = 0; i < orgs_size; i++) {
-// 			int data;
-// 			data = this->organisms[i].getPower();
-// 			my_file.write((char*)&data, sizeof(int));
-// 			data = this->organisms[i].getPosition().getX();
-// 			my_file.write((char*)&data, sizeof(int));
-// 			data = this->organisms[i].getPosition().getY();
-// 			my_file.write((char*)&data, sizeof(int));
-// 			string s_data = this->organisms[i].getSpecies();
-// 			int s_size = s_data.size();
-// 			my_file.write((char*)&s_size, sizeof(int));
-// 			my_file.write(s_data.data(), s_data.size());
-// 		}
-// 		my_file.close();
-// 	}
-// }
-
-// void World::readWorld(string fileName)
-// {
-// 	fstream my_file;
-// 	my_file.open(fileName, ios::in | ios::binary);
-// 	if (my_file.is_open()) {
-// 		int result;
-// 		my_file.read((char*)&result, sizeof(int));
-// 		this->worldX = (int)result;
-// 		my_file.read((char*)&result, sizeof(int));
-// 		this->worldY = (int)result;
-// 		my_file.read((char*)&result, sizeof(int));
-// 		this->turn = (int)result;
-// 		my_file.read((char*)&result, sizeof(int));
-// 		int orgs_size = (int)result;
-// 		vector<Organism> new_organisms;
-// 		for (int i = 0; i < orgs_size; i++) {
-// 			int power;
-// 			my_file.read((char*)&result, sizeof(int));
-// 			power = (int)result;
-
-// 			int pos_x;
-// 			my_file.read((char*)&result, sizeof(int));
-// 			pos_x = (int)result;
-// 			int pos_y;
-// 			my_file.read((char*)&result, sizeof(int));
-// 			pos_y = (int)result;
-// 			Position pos{ pos_x, pos_y };
-			
-// 			int s_size;
-// 			my_file.read((char*)&result, sizeof(int));
-// 			s_size = (int)result;
-
-// 			string species;
-// 			species.resize(s_size);
-// 			my_file.read((char*)&species[0], s_size);
-			
-// 			Organism org(power, pos);
-// 			org.setSpecies(species);
-// 			new_organisms.push_back(org);
-// 		}
-// 		this->organisms = new_organisms;
-// 		my_file.close();
-// 	}
-// }
-
-// string World::toString()
-// {
-// 	string result = "\nturn: " + to_string(getTurn()) + "\n";
-// 	string spec;
-
-// 	for (int wY = 0; wY < getWorldY(); ++wY) {
-// 		for (int wX = 0; wX < getWorldX(); ++wX) {
-// 			spec = getOrganismFromPosition(wX, wY);
-// 			if (spec != "")
-// 				result += spec;
-// 			else
-// 				result += separator;
-// 		};
-// 		result += "\n";
-// 	}
-// 	return result;
-// }
-
-
-
-
-// #include "World.h"
-// #include <fstream>
-// #include <algorithm>
-
-// string World::getOrganismFromPosition(int x, int y)
-// {
-//     for (Organism org : organisms)
-//         if (org.getPosition().getX() == x && org.getPosition().getY() == y)
-//             return org.getSpecies();
-//     return "";
-// }
-
-// bool World::isPositionOnWorld(int x, int y)
-// {
-//     return (x >= 0 && y >= 0 && x < getWorldX() && y < getWorldY());
-// }
-
-// bool World::isPositionFree(Position position)
-// {
-//     return this->getOrganismFromPosition(position.getX(), position.getY()).empty();
-// }
-
-// vector<Position> World::getVectorOfFreePositionsAround(Position position)
-// {
-//     int pos_x = position.getX(), pos_y = position.getY();
-//     vector<Position> result;
-//     for (int x = -1; x < 2; ++x)
-//         for (int y = -1; y < 2; ++y)
-//             if ((x != 0 || y != 0) && isPositionOnWorld(pos_x + x, pos_y + y))
-//             {
-//                 result.push_back(Position(pos_x + x, pos_y + y));
-//             }
-
-//     auto iter = remove_if(result.begin(), result.end(),
-//                           [this](Position pos) { return !isPositionFree(pos); });
-//     result.erase(iter, result.end());
-
-//     return result;
-// }
-
-// World::World(int worldX, int worldY)
-// {
-//     setWorldX(worldX);
-//     setWorldY(worldY);
-// }
-
-// int World::getWorldX()
-// {
-//     return this->worldX;
-// }
-
-// void World::setWorldX(int worldX)
-// {
-//     this->worldX = worldX;
-// }
-
-// int World::getWorldY()
-// {
-//     return this->worldY;
-// }
-
-// void World::setWorldY(int worldY)
-// {
-//     this->worldY = worldY;
-// }
-
-// int World::getTurn()
-// {
-//     return this->turn;
-// }
-
-// void World::addOrganism(Organism* organism)
-// {
-//     this->organisms.push_back(*organism);
-// }
-
-// void World::makeTurn()
-// {
-//     vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
-
-//     srand(time(0));
-//     for (auto& org : organisms)
-//     {
-//         newPositions = getVectorOfFreePositionsAround(org.getPosition());
-//         numberOfNewPositions = newPositions.size();
-//         if (numberOfNewPositions > 0)
-//         {
-//             randomIndex = rand() % numberOfNewPositions;
-//             org.setPosition(newPositions[randomIndex]);
-//         }
-//     }
-//     turn++;
-// }
-
-// void World::writeWorld(string fileName)
-// {
-//     fstream my_file;
-//     my_file.open(fileName, ios::out | ios::binary);
-//     if (my_file.is_open())
-//     {
-//         my_file.write((char*)&this->worldX, sizeof(int));
-//         my_file.write((char*)&this->worldY, sizeof(int));
-//         my_file.write((char*)&this->turn, sizeof(int));
-//         int orgs_size = this->organisms.size();
-//         my_file.write((char*)&orgs_size, sizeof(int));
-//         for (int i = 0; i < orgs_size; i++)
-//         {
-//             int data;
-//             data = this->organisms[i].getPower();
-//             my_file.write((char*)&data, sizeof(int));
-//             data = this->organisms[i].getPosition().getX();
-//             my_file.write((char*)&data, sizeof(int));
-//             data = this->organisms[i].getPosition().getY();
-//             my_file.write((char*)&data, sizeof(int));
-//             string s_data = this->organisms[i].getSpecies();
-//             int s_size = s_data.size();
-//             my_file.write((char*)&s_size, sizeof(int));
-//             my_file.write(s_data.data(), s_data.size());
-//         }
-//         my_file.close();
-//     }
-// }
-
-// void World::readWorld(string fileName)
-// {
-//     fstream my_file;
-//     my_file.open(fileName, ios::in | ios::binary);
-//     if (my_file.is_open())
-//     {
-//         int result;
-//         my_file.read((char*)&result, sizeof(int));
-//         this->worldX = (int)result;
-//         my_file.read((char*)&result, sizeof(int));
-//         this->worldY = (int)result;
-//         my_file.read((char*)&result, sizeof(int));
-//         this->turn = (int)result;
-//         my_file.read((char*)&result, sizeof(int));
-//         int orgs_size = (int)result;
-//         vector<Organism> new_organisms;
-        
-//         for (int i = 0; i < orgs_size; i++)
-//         {
-//             int power;
-//             my_file.read((char*)&result, sizeof(int));
-//             power = (int)result;
-
-//             int pos_x;
-//             my_file.read((char*)&result, sizeof(int));
-//             pos_x = (int)result;
-//             int pos_y;
-//             my_file.read((char*)&result, sizeof(int));
-//             pos_y = (int)result;
-//             Position pos{pos_x, pos_y};  // Przekazywanie przez wartość
-
-//             int s_size;
-//             my_file.read((char*)&result, sizeof(int));
-//             s_size = (int)result;
-
-//             string species;
-//             species.resize(s_size);
-//             my_file.read((char*)&species[0], s_size);
-
-//             // Wartości domyślne dla pozostałych argumentów
-//             int initiative = 1;  // lub jakąś inną wartość domyślną
-//             int liveLength = 10;  // wartość domyślna
-//             int powerToReproduce = 5;  // wartość domyślna
-//             char sign = species[0];  // np. pierwszy znak gatunku
-//             World* world = nullptr;  // Załóżmy, że wczytujesz świat później lub nie masz dostępu
-
-//             // Konstruktor Organism z wszystkimi parametrami
-//             Organism org(power, pos, species, initiative, liveLength, powerToReproduce, sign, world);
-//             new_organisms.push_back(org);
-//         }
-
-//         this->organisms = new_organisms;
-//         my_file.close();
-//     }
-// }
-
-
-// string World::toString()
-// {
-//     string result = "\nturn: " + to_string(getTurn()) + "\n";
-//     string spec;
-
-//     for (int wY = 0; wY < getWorldY(); ++wY)
-//     {
-//         for (int wX = 0; wX < getWorldX(); ++wX)
-//         {
-//             spec = getOrganismFromPosition(wX, wY);
-//             if (spec != "")
-//                 result += spec;
-//             else
-//                 result += separator;
-//         }
-//         result += "\n";
-//     }
-//     return result;
-// }
-
-// Position World::findEmptyAdjacentPosition(Position position) const {
-//     const vector<Position> directions = {
-//         Position(0, 1), Position(1, 0), Position(0, -1), Position(-1, 0)
-//     };
-    
-//     for (const auto& dir : directions) {
-//         Position newPos(position.getX() + dir.getX(), 
-//                        position.getY() + dir.getY());
-        
-//         if (isValidPosition(newPos) && isPositionFree(newPos)) {
-//             return newPos;
-//         }
-//     }
-//     return Position(-1, -1);  // Invalid position if none found
-// }
-
-
-
-
-// #include "World.h"
-// #include <fstream>
-// #include <algorithm>
-// #include <memory>
-// #include <cstdlib>
-// #include "Grass.h"
-
-// string World::getOrganismFromPosition(int x, int y) const
-// {
-//     for (const auto& org : organisms)
-//         if (org->getPosition().getX() == x && org->getPosition().getY() == y)
-//             return org->getSpecies();
-//     return "";
-// }
-
-// bool World::isPositionOnWorld(int x, int y) const
-// {
-//     return (x >= 0 && y >= 0 && x < worldX && y < worldY);
-// }
-
-// bool World::isPositionFree(Position position) const
-// {
-//     for (const auto& org : organisms) {
-//         if (org->getPosition() == position) {
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
-// vector<Position> World::getVectorOfFreePositionsAround(Position position) const
-// {
-//     vector<Position> result;
-//     int pos_x = position.getX();
-//     int pos_y = position.getY();
-    
-//     for (int x = -1; x <= 1; ++x) {
-//         for (int y = -1; y <= 1; ++y) {
-//             if ((x != 0 || y != 0)) {
-//                 Position newPos(pos_x + x, pos_y + y);
-//                 if (isPositionOnWorld(newPos.getX(), newPos.getY()) ){
-//                     result.push_back(newPos);
-//                 }
-//             }
-//         }
-//     }
-
-//     result.erase(
-//         remove_if(result.begin(), result.end(),
-//                  [this](const Position& pos) { return !isPositionFree(pos); }),
-//         result.end()
-//     );
-
-//     return result;
-// }
-
-// World::World(int worldX, int worldY) : worldX(worldX), worldY(worldY)
-// {
-// }
-
-// World::~World()
-// {
-//     for (auto org : organisms) {
-//         delete org;
-//     }
-// }
-
-// void World::addOrganism(Organism* organism)
-// {
-//     if (organism && isPositionOnWorld(organism->getPosition().getX(), 
-//                                     organism->getPosition().getY())) {
-//         organisms.push_back(organism);
-//         organism->setWorld(this);
-//     }
-// }
-
-// void World::makeTurn()
-// {
-//     // Sort organisms by initiative
-//     sort(organisms.begin(), organisms.end(),
-//         [](Organism* a, Organism* b) {
-//             return a->getInitiative() > b->getInitiative();
-//         });
-
-//     vector<Organism*> newOrganisms;
-    
-//     for (auto& org : organisms) {
-//         if (org->isAlive()) {
-//             org->move(0, 0);
-//             org->decreaseLife();
-            
-//             if (org->getPowerToReproduce() <= 0) {
-//                 Position newPos = findEmptyAdjacentPosition(org->getPosition());
-//                 if (newPos.isValid()) {
-//                     Organism* child = org->clone();
-//                     child->setPosition(newPos);
-//                     newOrganisms.push_back(child);
-//                     org->setPowerToReproduce(org->getInitialPowerToReproduce());
-//                 }
-//             }
-//         }
-//     }
-
-//     // Add new organisms
-//     for (auto org : newOrganisms) {
-//         addOrganism(org);
-//     }
-
-//     // Remove dead organisms
-//     organisms.erase(
-//         remove_if(organisms.begin(), organisms.end(),
-//                  [](Organism* org) { return !org->isAlive(); }),
-//         organisms.end()
-//     );
-
-//     turn++;
-// }
-
-// void World::writeWorld(const string& fileName) const
-// {
-//     ofstream my_file(fileName, ios::binary);
-//     if (my_file.is_open()) {
-//         my_file.write(reinterpret_cast<const char*>(&worldX), sizeof(worldX));
-//         my_file.write(reinterpret_cast<const char*>(&worldY), sizeof(worldY));
-//         my_file.write(reinterpret_cast<const char*>(&turn), sizeof(turn));
-        
-//         int orgs_size = organisms.size();
-//         my_file.write(reinterpret_cast<const char*>(&orgs_size), sizeof(orgs_size));
-        
-//         for (const auto& org : organisms) {
-//             int data = org->getPower();
-//             my_file.write(reinterpret_cast<const char*>(&data), sizeof(data));
-            
-//             data = org->getPosition().getX();
-//             my_file.write(reinterpret_cast<const char*>(&data), sizeof(data));
-            
-//             data = org->getPosition().getY();
-//             my_file.write(reinterpret_cast<const char*>(&data), sizeof(data));
-            
-//             string s_data = org->getSpecies();
-//             int s_size = s_data.size();
-//             my_file.write(reinterpret_cast<const char*>(&s_size), sizeof(s_size));
-//             my_file.write(s_data.c_str(), s_size);
-//         }
-//     }
-// }
-
-// void World::readWorld(const string& fileName)
-// {
-//     ifstream my_file(fileName, ios::binary);
-//     if (my_file.is_open()) {
-//         // Clear existing organisms
-//         for (auto org : organisms) {
-//             delete org;
-//         }
-//         organisms.clear();
-
-//         my_file.read(reinterpret_cast<char*>(&worldX), sizeof(worldX));
-//         my_file.read(reinterpret_cast<char*>(&worldY), sizeof(worldY));
-//         my_file.read(reinterpret_cast<char*>(&turn), sizeof(turn));
-        
-//         int orgs_size;
-//         my_file.read(reinterpret_cast<char*>(&orgs_size), sizeof(orgs_size));
-        
-//         for (int i = 0; i < orgs_size; i++) {
-//             int power, pos_x, pos_y;
-//             my_file.read(reinterpret_cast<char*>(&power), sizeof(power));
-//             my_file.read(reinterpret_cast<char*>(&pos_x), sizeof(pos_x));
-//             my_file.read(reinterpret_cast<char*>(&pos_y), sizeof(pos_y));
-            
-//             int s_size;
-//             my_file.read(reinterpret_cast<char*>(&s_size), sizeof(s_size));
-            
-//             string species(s_size, '\0');
-//             my_file.read(&species[0], s_size);
-            
-//             // Create appropriate organism based on species
-//             Organism* org = nullptr;
-//             if (species == "Grass") {
-//                 org = new Grass(Position(pos_x, pos_y), this);
-//             }
-//             // Add other species here...
-            
-//             if (org) {
-//                 org->setPower(power);
-//                 addOrganism(org);
-//             }
-//         }
-//     }
-// }
-
-// string World::toString() const
-// {
-//     string result = "\nturn: " + to_string(turn) + "\n";
-    
-//     for (int y = 0; y < worldY; ++y) {
-//         for (int x = 0; x < worldX; ++x) {
-//             string spec = getOrganismFromPosition(x, y);
-//             result += (spec.empty() ? string(1, separator) : spec);
-//         }
-//         result += "\n";
-//     }
-//     return result;
-// }
-
-// Position World::findEmptyAdjacentPosition(Position position) const {
-//     const vector<Position> directions = {
-//         Position(0, 1), Position(1, 0), Position(0, -1), Position(-1, 0)
-//     };
-    
-//     // Randomize direction checking
-//     vector<Position> shuffled = directions;
-//     random_shuffle(shuffled.begin(), shuffled.end());
-    
-//     for (const auto& dir : shuffled) {
-//         Position newPos(position.getX() + dir.getX(), 
-//                        position.getY() + dir.getY());
-        
-//         if (isPositionOnWorld(newPos.getX(), newPos.getY())) {
-//             bool occupied = false;
-//             for (const auto& org : organisms) {
-//                 if (org->getPosition() == newPos) {
-//                     occupied = true;
-//                     break;
-//                 }
-//             }
-//             if (!occupied) {
-//                 return newPos;
-//             }
-//         }
-//     }
-//     return Position(-1, -1);
-// }
-
-
-
-
-
-
 #include "World.h"
 #include <iostream>
 #include <fstream>
@@ -657,6 +12,8 @@
 #include "Dandelion.h"
 #include "Wolf.h"
 #include "Toadstool.h"
+#include <SDL2/SDL.h>
+
 
 World::World(int x, int y) : worldX(x), worldY(y) {}
 
@@ -668,301 +25,33 @@ void World::addOrganism(Organism* organism) {
     }
 }
 
-//bez rozprestrzeniania trawy
-// void World::makeTurn() {
-//     std::vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
 
-//     srand(time(0));
-//     for (auto& org : organisms) {
-//         if (dynamic_cast<Animal*>(org)) { // Tylko zwierzęta się poruszają
-//             Animal* animal = dynamic_cast<Animal*>(org);
-//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-//             numberOfNewPositions = newPositions.size();
-//             if (numberOfNewPositions > 0) {
-//                 randomIndex = rand() % numberOfNewPositions;
-//                 animal->move(newPositions[randomIndex].getX() - animal->getPosition().getX(),
-//                             newPositions[randomIndex].getY() - animal->getPosition().getY());
-//             }
-//         }
-//     }
-//     turn++;
-// }
-
-//bez mleczka 
-// void World::makeTurn() {
-//     std::vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
-
-//     srand(time(0));
-
-//     // Przechodzimy przez wszystkie organizmy w świecie
-//     for (auto& org : organisms) {
-//         if (dynamic_cast<Animal*>(org)) { // Tylko zwierzęta się poruszają
-//             Animal* animal = dynamic_cast<Animal*>(org);
-//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-//             numberOfNewPositions = newPositions.size();
-//             if (numberOfNewPositions > 0) {
-//                 randomIndex = rand() % numberOfNewPositions;
-//                 animal->move(newPositions[randomIndex].getX() - animal->getPosition().getX(),
-//                             newPositions[randomIndex].getY() - animal->getPosition().getY());
-//             }
-//         } 
-//         else if (dynamic_cast<Grass*>(org)) {  // Jeśli organizm jest trawą
-//             Grass* grass = dynamic_cast<Grass*>(org);
-//             grass->spread();  // Trawa rozprzestrzenia się
-//         }
-
-//     }
-
-//     turn++;  // Zwiększamy numer tury
-// }
-
-// void World::makeTurn() {
-//     std::vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
-
-//     srand(time(0));
-
-//     // Przechodzimy przez wszystkie organizmy w świecie
-//     for (auto& org : organisms) {
-//         if (dynamic_cast<Animal*>(org)) { // Tylko zwierzęta się poruszają
-//             Animal* animal = dynamic_cast<Animal*>(org);
-//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-//             numberOfNewPositions = newPositions.size();
-//             if (numberOfNewPositions > 0) {
-//                 randomIndex = rand() % numberOfNewPositions;
-//                 animal->move(newPositions[randomIndex].getX() - animal->getPosition().getX(),
-//                             newPositions[randomIndex].getY() - animal->getPosition().getY());
-//             }
-//         } 
-//         else if (dynamic_cast<Plant*>(org)) {  // Jeśli organizm jest trawą
-//             Plant* plant = dynamic_cast<Plant*>(org);
-//             plant->spread();  // Trawa rozprzestrzenia się
-//         }
-
-//     }
-
-//     turn++;  // Zwiększamy numer tury
-// }
-
-// void World::makeTurn() {
-//     std::vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
-
-//     srand(time(0));
-
-//     // Wektor tymczasowy, żeby nie iterować po usuwanych organizmach
-//     std::vector<Organism*> currentOrganisms = organisms;
-
-//     // Pierwszy etap - ruch organizmów
-//     for (auto& org : currentOrganisms) {
-//         if (org->getLiveLength() <= 0) continue;  // Pomijamy martwe organizmy
-
-//         if (dynamic_cast<Animal*>(org)) {
-//             Animal* animal = dynamic_cast<Animal*>(org);
-
-//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-//             numberOfNewPositions = newPositions.size();
-
-//             if (numberOfNewPositions > 0) {
-//                 randomIndex = rand() % numberOfNewPositions;
-//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
-//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
-//                 animal->move(dx, dy);
-//             }
-//         } else if (dynamic_cast<Plant*>(org)) {
-//             Plant* plant = dynamic_cast<Plant*>(org);
-//             plant->spread();  // np. trawa
-//         }
-//     }
-
-//     // Drugi etap - sprawdzanie kolizji na tej samej pozycji i sąsiednich pozycjach
-//     for (auto& org1 : currentOrganisms) {
-//         if (org1->getLiveLength() <= 0) continue;  // Pomijamy martwe organizmy
-
-//         // Sprawdzamy sąsiednie pozycje (w tym samą pozycję)
-//         for (auto& org2 : currentOrganisms) {
-//             if (org1 == org2) continue;  // Pomijamy porównanie organizmu z samym sobą
-//             if (org2->getLiveLength() <= 0) continue;  // Pomijamy martwe organizmy
-
-//             // Sprawdzamy, czy organizmy znajdują się na tej samej pozycji lub sąsiednich
-//             Position pos1 = org1->getPosition();
-//             Position pos2 = org2->getPosition();
-
-//             // Jeśli organizmy są na tej samej pozycji lub sąsiednich pozycjach (sąsiednie to +1/-1 w osi X lub Y)
-//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
-//                 org1->collision(org2);  // Wywołujemy metodę collision dla pary organizmów
-//             }
-//         }
-//     }
-
-//     // 🧹 Usuwamy martwe organizmy
-//     removeDeadOrganisms();
-
-//     turn++;  // Kolejna tura
-// }
-
-// void World::makeTurn() {
-//     std::vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
-
-//     srand(time(0));
-
-//     for (Organism* org : organisms) {
-//         if (org->getLiveLength() > 0) {
-//             org->setPower(org->getPower() + 1);
-//             org->setLiveLength(org->getLiveLength() - 1);
-//         }
-//     }    
-
-//     // Pierwszy etap - ruch organizmów (zwierzęta) i rozprzestrzenianie (rośliny)
-//     for (Organism* org : organisms) {
-//         if (org->getLiveLength() <= 0) continue;
-
-//         if (Animal* animal = dynamic_cast<Animal*>(org)) {
-//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-//             numberOfNewPositions = newPositions.size();
-
-//             if (numberOfNewPositions > 0) {
-//                 randomIndex = rand() % numberOfNewPositions;
-//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
-//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
-//                 animal->move(dx, dy);
-//             }
-
-//             if (animal->getLiveLength() <= 0) continue;
-//         }
-//         else if (Plant* plant = dynamic_cast<Plant*>(org)) {
-//             plant->spread();
-//         }
-//     }
-
-//     // Drugi etap - kolizje
-//     for (Organism* org1 : organisms) {
-//         if (org1->getLiveLength() <= 0) continue;
-
-//         for (Organism* org2 : organisms) {
-//             if (org1 == org2 || org2->getLiveLength() <= 0) continue;
-
-//             Position pos1 = org1->getPosition();
-//             Position pos2 = org2->getPosition();
-
-//             // Sprawdzenie, czy organizmy są w tej samej lub sąsiednich pozycjach
-//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
-//                 org1->collision(org2);
-//                 if (org1->getLiveLength() <= 0) break;
-//             }
-//         }
-//     }
-
-//     // Usuwamy martwe organizmy
-//     removeDeadOrganisms();
-
-//     // Zwiększamy licznik tury
-//     turn++;
-// }
-
-
-//do rozmnazania
-// void World::makeTurn() {
-//     std::vector<Position> newPositions;
-//     int numberOfNewPositions;
-//     int randomIndex;
-
-//     srand(time(0));
-
-//     // 🔄 Aktualizacja statystyk wszystkich organizmów
-//     for (Organism* org : organisms) {
-//         if (org->getLiveLength() > 0) {
-//             org->setPower(org->getPower() + 1);
-//             org->setLiveLength(org->getLiveLength() - 1);
-//         }
-//     }
-
-//     // 🧠 Sortowanie organizmów wg initiative (priorytetu) i siły (power)
-//     std::sort(organisms.begin(), organisms.end(), [](Organism* a, Organism* b) {
-//         if (a->getInitiative() != b->getInitiative())
-//             return a->getInitiative() > b->getInitiative();
-//         return a->getPower() > b->getPower();
-//     });
-
-//     // 🚶‍♂️ Pierwszy etap - ruch i rozprzestrzenianie
-//     for (Organism* org : organisms) {
-//         if (org->getLiveLength() <= 0) continue;
-
-//         if (Animal* animal = dynamic_cast<Animal*>(org)) {
-//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
-//             numberOfNewPositions = newPositions.size();
-
-//             if (numberOfNewPositions > 0) {
-//                 randomIndex = rand() % numberOfNewPositions;
-//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
-//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
-//                 animal->move(dx, dy);
-//             }
-
-//             if (animal->getLiveLength() <= 0) continue;
-//         }
-//         else if (Plant* plant = dynamic_cast<Plant*>(org)) {
-//             plant->spread();
-//         }
-//     }
-
-//     // 💥 Drugi etap - kolizje
-//     for (Organism* org1 : organisms) {
-//         if (org1->getLiveLength() <= 0) continue;
-
-//         for (Organism* org2 : organisms) {
-//             if (org1 == org2 || org2->getLiveLength() <= 0) continue;
-
-//             Position pos1 = org1->getPosition();
-//             Position pos2 = org2->getPosition();
-
-//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
-//                 org1->collision(org2);
-//                 if (org1->getLiveLength() <= 0) break;
-//             }
-//         }
-//     }
-
-//     // 🧹 Trzeci etap - czyszczenie martwych
-//     removeDeadOrganisms();
-
-//     // ⏭️ Zwiększamy licznik tury
-//     turn++;
-// }
-
-
-void World::makeTurn() {
+void World::makeTurn(SDL_Renderer* renderer) {
     std::vector<Position> newPositions;
     int numberOfNewPositions;
     int randomIndex;
 
-    srand(time(0));
-
-    // 🔄 Aktualizacja statystyk wszystkich organizmów
+    // Aktualizacja statystyk wszystkich organizmów
     for (Organism* org : organisms) {
-        if (org->getLiveLength() > 0) {
+        if (org && org->getLiveLength() > 0) {
             org->setPower(org->getPower() + 1);
             org->setLiveLength(org->getLiveLength() - 1);
         }
     }
 
-    // 🧠 Sortowanie organizmów wg initiative (priorytetu) i siły (power)
+    // Sortowanie organizmów wg inicjatywy i siły
     std::sort(organisms.begin(), organisms.end(), [](Organism* a, Organism* b) {
         if (a->getInitiative() != b->getInitiative())
             return a->getInitiative() > b->getInitiative();
         return a->getPower() > b->getPower();
     });
 
-    // 🚶‍♂️ Pierwszy etap - ruch, rozprzestrzenianie, rozmnażanie
+    // Pierwszy etap - ruch, rozprzestrzenianie, rozmnażanie
     for (Organism* org : organisms) {
+        if (!org) {
+            std::cerr << "Warning: Encountered a null organism!" << std::endl;
+            continue;
+        }
         if (org->getLiveLength() <= 0) continue;
 
         if (Animal* animal = dynamic_cast<Animal*>(org)) {
@@ -978,6 +67,7 @@ void World::makeTurn() {
                 }
             }
 
+            // Rozmnażanie
             if (partner) {
                 animal->reproduce(dynamic_cast<Animal*>(partner));
             }
@@ -991,38 +81,74 @@ void World::makeTurn() {
                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
                 animal->move(dx, dy);
-            }
 
-            if (animal->getLiveLength() <= 0) continue;
+                // Sprawdzenie, czy zwierzę przeżyło po ruchu
+                if (animal->getLiveLength() <= 0) continue;
+            }
         }
         else if (Plant* plant = dynamic_cast<Plant*>(org)) {
-            plant->spread();
+            if (plant->getLiveLength() > 0) {
+                plant->spread();
+            }
         }
     }
 
-    // 💥 Drugi etap - kolizje
-    for (Organism* org1 : organisms) {
+    // Drugi etap - kolizje
+    for (size_t i = 0; i < organisms.size(); ++i) {
+        Organism* org1 = organisms[i];
         if (org1->getLiveLength() <= 0) continue;
 
-        for (Organism* org2 : organisms) {
-            if (org1 == org2 || org2->getLiveLength() <= 0) continue;
+        for (size_t j = i + 1; j < organisms.size(); ++j) {
+            Organism* org2 = organisms[j];
+            if (org2->getLiveLength() <= 0) continue;
 
             Position pos1 = org1->getPosition();
             Position pos2 = org2->getPosition();
 
-            if ((pos1 == pos2) || 
-                (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+            if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
                 org1->collision(org2);
-                if (org1->getLiveLength() <= 0) break;
+                if (org1->getLiveLength() <= 0) break;  // Jeśli org1 umiera, przerwij
+                org2->collision(org1);  // Zrób kolizję w drugą stronę
+                if (org2->getLiveLength() <= 0) break;  // Jeśli org2 umiera, przerwij
             }
         }
     }
 
-    // 🧹 Trzeci etap - czyszczenie martwych
+    // Trzeci etap - czyszczenie martwych organizmów
     removeDeadOrganisms();
 
-    // ⏭️ Zwiększamy licznik tury
+    // Zwiększamy licznik tury
     turn++;
+
+    // Rysowanie stanu świata na ekranie
+    renderWorld(renderer);
+}
+
+
+
+void World::renderWorld(SDL_Renderer* renderer) {
+    // Czyszczenie ekranu
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Biały kolor
+    SDL_RenderClear(renderer);
+
+    // Rysowanie organizmów
+    for (Organism* org : organisms) {
+        if (org->getLiveLength() > 0) {
+            Position pos = org->getPosition();
+            SDL_Rect rect = { pos.getX() * 20, pos.getY() * 20, 20, 20 }; // Przeskalowane do większych jednostek
+            if (dynamic_cast<Grass*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Zielona trawa
+            } else if (dynamic_cast<Sheep*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Białe owce
+            } else if (dynamic_cast<Wolf*>(org)) {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Czerwony wilk
+            }
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+
+    // Aktualizacja ekranu
+    SDL_RenderPresent(renderer);
 }
 
 
@@ -1231,4 +357,8 @@ void World::removeDeadOrganisms() {
             ++it;
         }
     }
+}
+
+std::vector<Organism*> World::getOrganisms() {
+    return organisms;
 }

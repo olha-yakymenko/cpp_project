@@ -31,7 +31,7 @@ Dandelion::Dandelion()
 }
 
 void Dandelion::spread() {
-    if (getLiveLength() <= 0) return;
+    if (this->getLiveLength() <= 0) return;
 
     if (getWorld() == nullptr) {
         std::cerr << "World is not initialized!" << std::endl;

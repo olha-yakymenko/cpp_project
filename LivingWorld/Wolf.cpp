@@ -39,7 +39,9 @@ std::string Wolf::toString() const {
     return "Wolf at (" + std::to_string(getPosition().getX()) + ", " + std::to_string(getPosition().getY()) + ")";
 }
 
+
 std::pair<int, int> Wolf::findBestMove() {
+    // Możliwe kierunki ruchu (góra, prawo, dół, lewo)
     std::vector<std::pair<int, int>> directions = {
         {0, 1}, {1, 0}, {0, -1}, {-1, 0}  // góra, prawo, dół, lewo
     };
@@ -48,28 +50,38 @@ std::pair<int, int> Wolf::findBestMove() {
     std::pair<int, int> bestMove = {0, 0};  // domyślnie nie ruszaj się
     int bestPriority = -1;
 
+    // Sprawdzamy otoczenie wilka
     for (auto [dx, dy] : directions) {
         Position checkPos = current;
         checkPos.move(dx, dy);
         Organism* target = world->getOrganismFromPosition(checkPos);
 
         int priority = 0;
+        
+        // Jeśli znajdziemy owcę
         if (dynamic_cast<Sheep*>(target)) {
-            priority = 3;
-        } else if (dynamic_cast<Grass*>(target)) {
+            priority = 3;  // Najwyższy priorytet
+        } 
+        // Jeśli znajdziemy trawę
+        else if (dynamic_cast<Grass*>(target)) {
             priority = 2;
-        } else if (target == nullptr) {
+        }
+        // Jeśli pole jest wolne
+        else if (target == nullptr) {
             priority = 1;
         }
 
+        // Jeśli mamy wyższy priorytet, zmieniamy najlepszy ruch
         if (priority > bestPriority) {
             bestPriority = priority;
             bestMove = {dx, dy};
         }
     }
 
+    // Jeśli najlepszy ruch jest do owcy, wilk będzie się starał w jej stronę
     return bestMove;
 }
+
 
 
 void Wolf::move(int dx_unused, int dy_unused) {

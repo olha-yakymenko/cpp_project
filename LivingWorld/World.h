@@ -90,6 +90,7 @@
 #include <vector>
 #include <ctime>
 #include "Organism.h"
+#include <SDL2/SDL.h>
 
 using namespace std;
 
@@ -119,7 +120,10 @@ public:
 	
 	void addOrganism(Organism *organism);
 	vector<Position> getVectorOfFreePositionsAround(Position position);
-	void makeTurn();
+	// void makeTurn();
+
+	void makeTurn(SDL_Renderer* renderer);  // Zmieniona deklaracja
+    void renderWorld(SDL_Renderer* renderer);
 
 	void writeWorld(string fileName);
 	void readWorld(string fileName);
@@ -134,4 +138,5 @@ public:
 	void removeDeadOrganisms();
 	
 	Organism* getOrganismFromPosition(Position pos);
+	std::vector<Organism*> getOrganisms();
 };
