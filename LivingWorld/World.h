@@ -104,6 +104,7 @@ private:
 
 	string getOrganismFromPosition(int x, int y);
 	bool isPositionOnWorld(int x, int y);
+	
 
 public:
 	World(int worldX, int worldY);

@@ -45,10 +45,13 @@ public:
     // Nadpisane metody wirtualne z klasy bazowej
     virtual void move(int dx, int dy) override;
     virtual void spread() override;
-    virtual Animal* clone() const override;
     virtual std::string toString() const override;
     void collision(Organism* other) override;
-
+    virtual Animal* createOffspring(Position pos) = 0;
+    virtual Animal* clone() const = 0;
+    // virtual ~Animal() = default;
+    virtual std::pair<int, int> findBestMove() = 0;
+    virtual void reproduce(Animal* partner) = 0;
 protected:
     Position previousPosition;  // Zapamiętywanie poprzedniej pozycji
 };

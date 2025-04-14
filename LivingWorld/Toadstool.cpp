@@ -34,7 +34,7 @@ void Toadstool::spread() {
     if (getLiveLength() <= 0) return;
 
     if (getWorld() == nullptr) {
-        std::cerr << "World is not initialized!" << std::endl;
+        std::cerr << "muchomor : World is not initialized!" << std::endl;
         return;
     }
 

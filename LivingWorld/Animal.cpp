@@ -35,9 +35,6 @@ void Animal::spread() {
     // Logika rozprzestrzeniania dla zwierzęcia
 }
 
-Animal* Animal::clone() const {
-    return new Animal(*this);  // Tworzenie kopii zwierzęcia
-}
 
 std::string Animal::toString() const {
     return species + " at (" + std::to_string(position.getX()) + ", " + std::to_string(position.getY()) + ")";
@@ -46,4 +43,46 @@ std::string Animal::toString() const {
 
 void Animal::collision(Organism* other) {
   
+}
+
+void Animal::reproduce(Animal* partner) {
+    // Sprawdź, czy partner nie jest nullptr
+    if (partner == nullptr) {
+        return;  // Jeśli partner jest nullptr, zakończ metodę
+    }
+
+    if (world == nullptr) {
+        return;  // Jeśli partner jest nullptr, zakończ metodę
+    }
+
+    // Sprawdź, czy oba zwierzęta mają wystarczającą moc do rozmnożenia
+    if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
+        // Jeśli któryś z partnerów nie spełnia warunku, wywołaj kolizję
+        this->collision(partner);  // Wywołanie kolizji
+        return;  // Zakończ działanie metody
+    }
+
+    // Sprawdź, czy świat istnieje, aby uniknąć błędu segmentacji
+    if (!world) {
+        return;  // Jeśli world jest nullptr, zakończ metodę
+    }
+
+    // Znajdź wolne pole wokół któregoś z rodziców
+    std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
+    if (freePositions.empty()) {
+        return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
+    }
+
+    // Wybierz losową pozycję dla potomka
+    Position childPos = freePositions[rand() % freePositions.size()];
+
+    // Stwórz nowego organizmu (potomka) tego samego typu
+    Animal* child = this->createOffspring(childPos);
+    if (child) {
+        world->addOrganism(child);  // Dodaj potomka do świata
+    }
+
+    // Osłabienie rodziców po rozmnożeniu
+    this->setPower(this->getPower() / 2);  // Pierwszy rodzic
+    partner->setPower(partner->getPower() / 2);  // Drugi rodzic
 }

@@ -31,7 +31,9 @@
 
 #include "Sheep.h"
 #include "World.h"
+#include "Grass.h"
 #include <iostream>
+#include <cstdlib>
 
 Sheep::Sheep(Position position, World* world)
     : Animal(3, position, world) {
@@ -61,8 +63,9 @@ Sheep::Sheep()
 }
 
 Animal* Sheep::clone() const {
-    return new Sheep(*this);
+    return new Sheep(*this);  // Implementacja w pliku źródłowym
 }
+
 
 std::string Sheep::toString() const {
     return "Sheep at (" + std::to_string(getPosition().getX()) + ", " + std::to_string(getPosition().getY()) + ")";
@@ -111,27 +114,114 @@ void Sheep::collision(Organism* other) {
         std::cout << "Sheep at " << getPosition().toString() << " eats grass!" << std::endl;
         setPower(getPower() + other->getPower());
     } else if (species == "Toadstool") {
-        std::cout << "TUTAJ";
         std::cout << "Sheep at " << getPosition().toString() << " eats poisonous mushroom and dies!" << std::endl;
         setLiveLength(0);  // Owca umiera
     } else if (species == "Wolf") {
         std::cout << "Sheep at " << getPosition().toString() << " was eaten by a wolf!" << std::endl;
         setLiveLength(0);  // Owca umiera
-    }
+    } 
+    
 }
+
 
 void Sheep::move(int dx, int dy) {
     if (getLiveLength() <= 0) return;
 
-    Position prevPos = getPosition();
-    Position newPos = prevPos;
-    newPos.move(dx, dy);
+    // Sprawdzamy otoczenie w poszukiwaniu trawy
+    Position currentPos = getPosition();
+    std::pair<int, int> bestMove = findBestMove();  // Znajdź najlepszy ruch (w stronę trawy)
+
+    // Jeśli nie ma trawy, poruszamy się losowo
+    if (bestMove == std::pair<int, int>{0, 0}) {
+        // Losowy ruch (w 4 kierunkach)
+        bestMove = {rand() % 3 - 1, rand() % 3 - 1};  // Losowy kierunek: {-1, 0, 1} dla x i y
+    }
+
+    Position newPos = currentPos;
+    newPos.move(bestMove.first, bestMove.second);  // Ruch do najlepszego pola
 
     if (world != nullptr) {
         Organism* target = world->getOrganismFromPosition(newPos);
-        collision(target);  // wykonaj zderzenie (np. zjedzenie, śmierć)
-        setPosition(newPos);  // ruszamy owcę
+        collision(target);  // Kolizja (np. owca może zjeść trawę, jeśli to będzie możliwe)
+        setPosition(newPos);  // Owca przemieszcza się
     } else {
-        setPosition(newPos);
+        setPosition(newPos);  // Jeśli nie ma świata, po prostu się przemieszcza
     }
+}
+std::pair<int, int> Sheep::findBestMove() {
+    // Kierunki: góra, prawo, dół, lewo
+    std::vector<std::pair<int, int>> directions = {
+        {0, 1}, {1, 0}, {0, -1}, {-1, 0}
+    };
+
+    Position current = getPosition();
+    std::pair<int, int> bestMove = {0, 0};  // Domyślnie nie ruszaj się
+    int bestPriority = 0;
+
+    // Sprawdzamy, czy world jest poprawnie ustawiony
+    if (world == nullptr) {
+        std::cerr << "Error: world is null!" << std::endl;
+        return bestMove;  // Zwracamy domyślny ruch, jeśli world jest null
+    }
+
+    for (auto [dx, dy] : directions) {
+        Position checkPos = current;
+        checkPos.move(dx, dy);
+        Organism* target = world->getOrganismFromPosition(checkPos);
+
+        int priority = 0;
+
+        // Jeśli na sprawdzanej pozycji jest trawa, nadamy wyższy priorytet
+        if (dynamic_cast<Grass*>(target)) {  
+            priority = 2;  // Wysoki priorytet dla trawy
+        } 
+        // Jeśli nie ma organizmu (puste pole), nadamy średni priorytet
+        else if (target == nullptr) {  
+            priority = 1;  // Puste pole ma średni priorytet
+        }
+
+        // Jeśli znaleziono lepszy priorytet, zapisz ten kierunek jako najlepszy
+        if (priority > bestPriority) {
+            bestPriority = priority;
+            bestMove = {dx, dy};
+        }
+    }
+
+    return bestMove;
+}
+
+
+Animal* Sheep::createOffspring(Position pos) {
+    return new Sheep(pos, world);  // zakładając że masz taki konstruktor
+}
+
+void Sheep::reproduce(Animal* partner) {
+    if (partner == nullptr) {
+        std::cout << "sheep p" << std::endl;
+        return;  // Jeśli partner jest nullptr, zakończ metodę
+    }
+
+    if (world == nullptr) {
+        std::cout << "sheep" << std::endl;
+        return;  // Jeśli partner jest nullptr, zakończ metodę
+    }
+    // Sprawdź, czy warunki rozmnażania są spełnione
+    if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
+        // Jeśli nie, wywołaj kolizję
+        this->collision(partner);
+        return;  // Zakończ metodę
+    }
+
+    // Znajdź wolne pole wokół owcy
+    std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
+    if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
+
+    // Stwórz potomka w jednej z wolnych pozycji
+    Position childPos = freePositions[rand() % freePositions.size()];
+    Sheep* child = new Sheep(childPos, world);  // Zakładając, że masz odpowiednią metodę konstrukcji dla Sheep
+    world->addOrganism(child);
+    std::cout << "dziecko owcy" << child->getPosition().toString() << std::endl;
+    // Osłabienie rodziców
+    this->setPower(this->getPower() / 2);
+    partner->setPower(partner->getPower() / 2);
 }

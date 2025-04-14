@@ -375,8 +375,149 @@
 
 
 
+//do 3d
+
+// #include <iostream>
+// #include <cstdlib>
+// #include <ctime>
+// #include "Position.h"
+// #include "Organism.h"
+// #include "Plant.h"
+// #include "Animal.h"
+// #include "Grass.h"
+// #include "Sheep.h"
+// #include "Dandelion.h"
+// #include "Wolf.h"
+// #include "World.h"
+// #include "Toadstool.h"
+
+// using namespace std;
+
+// int main() {
+//     srand(time(0));  // Inicjalizacja generatora losowego
+
+//     // Position examples
+//     Position p1;
+//     Position p2{ 1, 1 };
+//     Position p3{ -3, -5 };
+
+//     // Plant & Animal examples
+//     Grass grass{ 3, p3, nullptr };
+//     Sheep sheep{ p2, nullptr };
+//     Grass grass2;
+//     Sheep sheep2;
+
+//     // Dandelion example
+//     Position pDandelion{ 2, 2 };
+//     Dandelion dandelion{ 2, pDandelion, nullptr };
+//     Toadstool toadstool {3, 5, nullptr};
+    
+
+//     // Print initial states
+//     cout << "Initial state:" << endl;
+//     cout << grass.toString() << endl;
+//     cout << sheep.toString() << endl;
+//     cout << grass2.toString() << endl;
+//     cout << sheep2.toString() << endl;
+//     cout << dandelion.toString() << endl;
+//     cout << toadstool.toString() << endl;
+
+//     // Move Plants and Animals
+//     grass.move(3, 4);
+//     cout << "Moved grass to: " << grass.toString() << endl;
+//     sheep.move(1, 2);
+//     cout << "Moved sheep to: " << sheep.toString() << endl;
+
+//     // World test
+//     World world;
+
+//     // Add organisms to the world, including Dandelion
+//     Position posP1{ 4, 5 };
+//     Grass grassW1{ 3, posP1, &world };
+//     Position posP2{ 5, 4 };
+//     Grass grassW2{ 3, posP2, &world };
+
+//     Position posW2{ 3, 2 };
+//     Sheep sheepW1{ posW2, &world };
+//     Position posW3{ 2, 3 };
+//     Sheep sheepW2{ posW3, &world };
+
+//     Position posDandelion{ 6, 6 };
+//     Dandelion dandelionW{ 3, posDandelion, &world };
+
+//     // Wolf example
+//     Position posWolf{ 1, 4 };
+//     Wolf wolfW{ posWolf, &world };
+
+//     // Add organisms to the world
+//     world.addOrganism(&grassW1);
+//     world.addOrganism(&grassW2);
+//     world.addOrganism(&sheepW1);
+//     world.addOrganism(&sheepW2);
+//     world.addOrganism(&dandelionW);
+//     world.addOrganism(&wolfW);
+//     world.addOrganism(&toadstool);
+
+//     // Dodaj dodatkowe wilki
+//     for (int i = 0; i < 5; ++i) {
+//         Position randomWolfPos{ rand() % 10, rand() % 10 };
+//         Wolf* newWolf = new Wolf{ randomWolfPos, &world };
+//         world.addOrganism(newWolf);
+//     }
+
+//     // Dodaj dodatkowe owce
+//     for (int i = 0; i < 10; ++i) {
+//         Position randomSheepPos{ rand() % 10, rand() % 10 };
+//         Sheep* newSheep = new Sheep{ randomSheepPos, &world };
+//         world.addOrganism(newSheep);
+//     }
+
+//     // Adding more grass to the world
+//     for (int i = 0; i < 50; ++i) {
+//         Position randomPos{ rand() % 10, rand() % 10 };
+//         Grass* newGrass = new Grass{ 3, randomPos, &world };
+//         world.addOrganism(newGrass);
+//     }
+
+//     // Print free positions around a given position
+//     auto positions = world.getVectorOfFreePositionsAround(Position(5, 5));
+//     cout << "Free positions around (5,5):" << endl;
+//     for (auto pos : positions)
+//         cout << pos.toString() << endl;
+
+//     // Display world state at Turn 0
+//     cout << "Turn 0:" << endl;
+//     cout << world.toString() << endl;
+
+//     // Turn 1
+//     world.makeTurn();
+//     cout << "Turn 1:" << endl;
+//     cout << world.toString() << endl;
+
+//     // Turn 2
+//     world.makeTurn();
+//     cout << "Turn 2:" << endl;
+//     cout << world.toString() << endl;
+
+//     // Save the world state to a file
+//     world.writeWorld("world.bin");
+
+//     // Turn 3
+//     world.makeTurn();
+//     cout << "Turn 3:" << endl;
+//     cout << world.toString() << endl;
+
+//     // Load previous world state
+//     world.readWorld("world.bin");
+//     cout << "Back to Turn 2:" << endl;
+//     cout << world.toString() << endl;
+
+//     return 0;
+// }
 
 
+
+#include <SDL2/SDL.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -393,124 +534,93 @@
 
 using namespace std;
 
+// Funkcja do inicjalizacji SDL2
+bool init(SDL_Window*& window, SDL_Renderer*& renderer) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
+        return false;
+    }
+    
+    // Tworzenie okna
+    window = SDL_CreateWindow("World Simulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
+    if (!window) {
+        cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
+        return false;
+    }
+    
+    // Tworzenie renderer'a
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
+        return false;
+    }
+
+    return true;
+}
+
+// Funkcja do czyszczenia zasobów
+void close(SDL_Window* window, SDL_Renderer* renderer) {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
 int main() {
     srand(time(0));  // Inicjalizacja generatora losowego
 
-    // Position examples
-    Position p1;
-    Position p2{ 1, 1 };
-    Position p3{ -3, -5 };
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
 
-    // Plant & Animal examples
-    Grass grass{ 3, p3, nullptr };
-    Sheep sheep{ p2, nullptr };
-    Grass grass2;
-    Sheep sheep2;
+    // Inicjalizuj SDL2
+    if (!init(window, renderer)) {
+        cout << "Failed to initialize!" << endl;
+        return -1;
+    }
 
-    // Dandelion example
-    Position pDandelion{ 2, 2 };
-    Dandelion dandelion{ 2, pDandelion, nullptr };
-    Toadstool toadstool {3, 5, nullptr};
-    
-
-    // Print initial states
-    cout << "Initial state:" << endl;
-    cout << grass.toString() << endl;
-    cout << sheep.toString() << endl;
-    cout << grass2.toString() << endl;
-    cout << sheep2.toString() << endl;
-    cout << dandelion.toString() << endl;
-    cout << toadstool.toString() << endl;
-
-    // Move Plants and Animals
-    grass.move(3, 4);
-    cout << "Moved grass to: " << grass.toString() << endl;
-    sheep.move(1, 2);
-    cout << "Moved sheep to: " << sheep.toString() << endl;
-
-    // World test
+    // Utwórz świat i organizmy
     World world;
 
-    // Add organisms to the world, including Dandelion
-    Position posP1{ 4, 5 };
-    Grass grassW1{ 3, posP1, &world };
-    Position posP2{ 5, 4 };
-    Grass grassW2{ 3, posP2, &world };
+    // Przykładowe dodanie organizmów do świata
+    Position pos1{ 4, 5 };
+    Grass grass{ 3, pos1, &world };
+    world.addOrganism(&grass);
 
-    Position posW2{ 3, 2 };
-    Sheep sheepW1{ posW2, &world };
-    Position posW3{ 2, 3 };
-    Sheep sheepW2{ posW3, &world };
+    // Ustawienia renderowania
+    bool quit = false;
+    SDL_Event e;
 
-    Position posDandelion{ 6, 6 };
-    Dandelion dandelionW{ 3, posDandelion, &world };
+    // Pętla główna aplikacji
+    while (!quit) {
+        // Obsługuje zdarzenia
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
 
-    // Wolf example
-    Position posWolf{ 1, 4 };
-    Wolf wolfW{ posWolf, &world };
+        // Wyczyść ekran
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Biały kolor tła
+        SDL_RenderClear(renderer);
 
-    // Add organisms to the world
-    world.addOrganism(&grassW1);
-    world.addOrganism(&grassW2);
-    world.addOrganism(&sheepW1);
-    world.addOrganism(&sheepW2);
-    world.addOrganism(&dandelionW);
-    world.addOrganism(&wolfW);
-    world.addOrganism(&toadstool);
+        // Rysowanie organizmów (np. trawy)
+        for (Organism* org : world.getOrganisms()) {
+            if (org->getLiveLength() > 0) {
+                Position pos = org->getPosition();
+                SDL_Rect rect = { pos.getX() * 10, pos.getY() * 10, 10, 10 };
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Zielony kolor dla trawy
+                SDL_RenderFillRect(renderer, &rect);
+            }
+        }
 
-    // Dodaj dodatkowe wilki
-    for (int i = 0; i < 5; ++i) {
-        Position randomWolfPos{ rand() % 10, rand() % 10 };
-        Wolf* newWolf = new Wolf{ randomWolfPos, &world };
-        world.addOrganism(newWolf);
+        // Aktualizuj ekran
+        SDL_RenderPresent(renderer);
+
+        // Dodaj opóźnienie, aby gra nie działała za szybko
+        SDL_Delay(100);
     }
 
-    // Dodaj dodatkowe owce
-    for (int i = 0; i < 10; ++i) {
-        Position randomSheepPos{ rand() % 10, rand() % 10 };
-        Sheep* newSheep = new Sheep{ randomSheepPos, &world };
-        world.addOrganism(newSheep);
-    }
-
-    // Adding more grass to the world
-    for (int i = 0; i < 50; ++i) {
-        Position randomPos{ rand() % 10, rand() % 10 };
-        Grass* newGrass = new Grass{ 3, randomPos, &world };
-        world.addOrganism(newGrass);
-    }
-
-    // Print free positions around a given position
-    auto positions = world.getVectorOfFreePositionsAround(Position(5, 5));
-    cout << "Free positions around (5,5):" << endl;
-    for (auto pos : positions)
-        cout << pos.toString() << endl;
-
-    // Display world state at Turn 0
-    cout << "Turn 0:" << endl;
-    cout << world.toString() << endl;
-
-    // Turn 1
-    world.makeTurn();
-    cout << "Turn 1:" << endl;
-    cout << world.toString() << endl;
-
-    // Turn 2
-    world.makeTurn();
-    cout << "Turn 2:" << endl;
-    cout << world.toString() << endl;
-
-    // Save the world state to a file
-    world.writeWorld("world.bin");
-
-    // Turn 3
-    world.makeTurn();
-    cout << "Turn 3:" << endl;
-    cout << world.toString() << endl;
-
-    // Load previous world state
-    world.readWorld("world.bin");
-    cout << "Back to Turn 2:" << endl;
-    cout << world.toString() << endl;
+    // Zamyka aplikację
+    close(window, renderer);
 
     return 0;
 }

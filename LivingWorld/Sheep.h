@@ -29,4 +29,7 @@ public:
     std::string toString() const override;
     void move(int dx, int dy) override;
     void collision(Organism* other) override;
+    Animal* createOffspring(Position pos) override;
+    std::pair<int, int> findBestMove() override;
+    void reproduce(Animal* partner) override;
 };

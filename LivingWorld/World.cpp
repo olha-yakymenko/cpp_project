@@ -868,6 +868,77 @@ void World::addOrganism(Organism* organism) {
 //     turn++;
 // }
 
+
+//do rozmnazania
+// void World::makeTurn() {
+//     std::vector<Position> newPositions;
+//     int numberOfNewPositions;
+//     int randomIndex;
+
+//     srand(time(0));
+
+//     // 🔄 Aktualizacja statystyk wszystkich organizmów
+//     for (Organism* org : organisms) {
+//         if (org->getLiveLength() > 0) {
+//             org->setPower(org->getPower() + 1);
+//             org->setLiveLength(org->getLiveLength() - 1);
+//         }
+//     }
+
+//     // 🧠 Sortowanie organizmów wg initiative (priorytetu) i siły (power)
+//     std::sort(organisms.begin(), organisms.end(), [](Organism* a, Organism* b) {
+//         if (a->getInitiative() != b->getInitiative())
+//             return a->getInitiative() > b->getInitiative();
+//         return a->getPower() > b->getPower();
+//     });
+
+//     // 🚶‍♂️ Pierwszy etap - ruch i rozprzestrzenianie
+//     for (Organism* org : organisms) {
+//         if (org->getLiveLength() <= 0) continue;
+
+//         if (Animal* animal = dynamic_cast<Animal*>(org)) {
+//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
+//             numberOfNewPositions = newPositions.size();
+
+//             if (numberOfNewPositions > 0) {
+//                 randomIndex = rand() % numberOfNewPositions;
+//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
+//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
+//                 animal->move(dx, dy);
+//             }
+
+//             if (animal->getLiveLength() <= 0) continue;
+//         }
+//         else if (Plant* plant = dynamic_cast<Plant*>(org)) {
+//             plant->spread();
+//         }
+//     }
+
+//     // 💥 Drugi etap - kolizje
+//     for (Organism* org1 : organisms) {
+//         if (org1->getLiveLength() <= 0) continue;
+
+//         for (Organism* org2 : organisms) {
+//             if (org1 == org2 || org2->getLiveLength() <= 0) continue;
+
+//             Position pos1 = org1->getPosition();
+//             Position pos2 = org2->getPosition();
+
+//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+//                 org1->collision(org2);
+//                 if (org1->getLiveLength() <= 0) break;
+//             }
+//         }
+//     }
+
+//     // 🧹 Trzeci etap - czyszczenie martwych
+//     removeDeadOrganisms();
+
+//     // ⏭️ Zwiększamy licznik tury
+//     turn++;
+// }
+
+
 void World::makeTurn() {
     std::vector<Position> newPositions;
     int numberOfNewPositions;
@@ -890,11 +961,28 @@ void World::makeTurn() {
         return a->getPower() > b->getPower();
     });
 
-    // 🚶‍♂️ Pierwszy etap - ruch i rozprzestrzenianie
+    // 🚶‍♂️ Pierwszy etap - ruch, rozprzestrzenianie, rozmnażanie
     for (Organism* org : organisms) {
         if (org->getLiveLength() <= 0) continue;
 
         if (Animal* animal = dynamic_cast<Animal*>(org)) {
+            // Znajdź potencjalnego partnera do rozmnażania
+            Organism* partner = nullptr;
+            for (Organism* other : organisms) {
+                if (other == animal || other->getLiveLength() <= 0) continue;
+                if (animal->getSpecies() == other->getSpecies() &&
+                    abs(animal->getPosition().getX() - other->getPosition().getX()) <= 1 &&
+                    abs(animal->getPosition().getY() - other->getPosition().getY()) <= 1) {
+                    partner = other;
+                    break;
+                }
+            }
+
+            if (partner) {
+                animal->reproduce(dynamic_cast<Animal*>(partner));
+            }
+
+            // Ruch
             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
             numberOfNewPositions = newPositions.size();
 
@@ -922,7 +1010,8 @@ void World::makeTurn() {
             Position pos1 = org1->getPosition();
             Position pos2 = org2->getPosition();
 
-            if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+            if ((pos1 == pos2) || 
+                (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
                 org1->collision(org2);
                 if (org1->getLiveLength() <= 0) break;
             }
@@ -935,6 +1024,7 @@ void World::makeTurn() {
     // ⏭️ Zwiększamy licznik tury
     turn++;
 }
+
 
 
 std::string World::toString() const {
