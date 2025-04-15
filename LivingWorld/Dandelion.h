@@ -11,4 +11,7 @@ public:
     Dandelion* clone() const override;
     std::string toString() const override;
     void collision(Organism* other) override;
+    private:
+    void initializeDandelion();
+
 };

@@ -29,6 +29,11 @@ bool Position::isValid() const {
     return x >= 0 && y >= 0;
 }
 
+// bool Position::isValid(World* world) const {
+//     return x >= 0 && y >= 0 && x < world->getWidth() && y < world->getHeight();
+// }
+
+
 double Position::distance(Position position) const {
     double dx = this->getX() - position.getX();
     double dy = this->getY() - position.getY();

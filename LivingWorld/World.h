@@ -139,4 +139,6 @@ public:
 	
 	Organism* getOrganismFromPosition(Position pos);
 	std::vector<Organism*> getOrganisms();
+	int getCurrentTurn() const { return turn; }
+
 };

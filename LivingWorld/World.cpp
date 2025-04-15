@@ -25,7 +25,6 @@ void World::addOrganism(Organism* organism) {
     }
 }
 
-
 void World::makeTurn(SDL_Renderer* renderer) {
     std::vector<Position> newPositions;
     int numberOfNewPositions;
@@ -48,9 +47,8 @@ void World::makeTurn(SDL_Renderer* renderer) {
 
     // Pierwszy etap - ruch, rozprzestrzenianie, rozmnażanie
     for (Organism* org : organisms) {
-        if (!org) {
-            std::cerr << "Warning: Encountered a null organism!" << std::endl;
-            continue;
+        if (org == nullptr) {
+            continue;  // Pomiń organizmy, które są null
         }
         if (org->getLiveLength() <= 0) continue;
 

@@ -119,6 +119,9 @@ void Sheep::collision(Organism* other) {
     } else if (species == "Wolf") {
         std::cout << "Sheep at " << getPosition().toString() << " was eaten by a wolf!" << std::endl;
         setLiveLength(0);  // Owca umiera
+    } else if (species == "Dandelion") {
+        std::cout << "Sheep at " << getPosition().toString() << " was eaten a dandelion!" << std::endl;
+        setLiveLength(getLiveLength()+1);  
     } 
     
 }
@@ -218,7 +221,9 @@ void Sheep::reproduce(Animal* partner) {
 
     // Stwórz potomka w jednej z wolnych pozycji
     Position childPos = freePositions[rand() % freePositions.size()];
-    Sheep* child = new Sheep(childPos, world);  // Zakładając, że masz odpowiednią metodę konstrukcji dla Sheep
+    Sheep* child = new Sheep(childPos, world);
+    child->setAncestorsHistory(this->getAncestorsHistory());
+    child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());  // Zakładając, że masz odpowiednią metodę konstrukcji dla Sheep
     world->addOrganism(child);
     std::cout << "dziecko owcy" << child->getPosition().toString() << std::endl;
     // Osłabienie rodziców

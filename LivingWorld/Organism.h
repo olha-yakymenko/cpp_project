@@ -186,8 +186,23 @@
 #include "Position.h"
 #include <string>
 #include <SDL2/SDL.h>
+#include <vector>
 
 class World;  // Forward declaration
+
+struct Ancestor {
+  int birthTurn;
+  int deathTurn;
+
+  // Default constructor
+  Ancestor() : birthTurn(0), deathTurn(0) {}
+
+  // Constructor with parameters
+  Ancestor(int birthTurn, int deathTurn)
+      : birthTurn(birthTurn), deathTurn(deathTurn) {}
+};
+
+// Add this method to the Organism class in the header file (Organism.h)
 
 class Organism {
 public:
@@ -196,8 +211,9 @@ public:
     
     // Konstruktor z parametrami
     Organism(int power, Position position, std::string species,
-		int initiative, int liveLength, int powerToReproduce,
-		char sign, World* world);
+      int initiative, int liveLength, int powerToReproduce,
+      char sign, World* world);
+
 
     // Wirtualny destruktor
     virtual ~Organism() = default;
@@ -244,8 +260,25 @@ public:
     virtual void decreaseLife();
 
 	virtual void collision(Organism* other) = 0;
-  
+
   virtual void draw(SDL_Renderer* renderer) = 0;
+
+  Organism& operator=(const Organism& other);
+Organism& operator=(Organism&& other) noexcept;
+
+
+  // Konstruktor kopiujący
+Organism(const Organism& other);
+
+// Konstruktor przenoszący
+Organism(Organism&& other) noexcept;
+
+void setAncestorsHistory(const std::vector<Ancestor>& history);
+int getBirthTurn() const { return birthTurn; }
+void setBirthTurn(int turn) { birthTurn = turn; }
+
+void addAncestor(int birthTurn, int deathTurn);
+    const std::vector<Ancestor>& getAncestorsHistory() const;
 
 
 protected:
@@ -258,4 +291,8 @@ protected:
     int initialPowerToReproduce; // Dodana zmienna
     char sign;
     World* world;
+
+    std::vector<Ancestor> ancestorsHistory;
+    int birthTurn;
+
 };

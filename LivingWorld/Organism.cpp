@@ -5,13 +5,31 @@ Organism::Organism()
     : power(0), initiative(0), liveLength(0), powerToReproduce(0), 
       initialPowerToReproduce(0), sign(' '), world(nullptr) {}
 
-Organism::Organism(int power, Position position, std::string species,
-                   int initiative, int liveLength, int powerToReproduce,
-                   char sign, World* world)
-    : power(power), position(position), species(species),
-      initiative(initiative), liveLength(liveLength), powerToReproduce(powerToReproduce),
-      initialPowerToReproduce(powerToReproduce), sign(sign), world(world) {}
+      Organism::Organism(int power, Position position, std::string species,
+        int initiative, int liveLength, int powerToReproduce,
+        char sign, World* world)
+        : power(power), position(position), species(species),
+        initiative(initiative), liveLength(liveLength),
+        powerToReproduce(powerToReproduce), initialPowerToReproduce(powerToReproduce),
+        sign(sign), world(world) {
+            addAncestor(birthTurn, 0);
+        }
 
+
+
+
+Organism::Organism(const Organism& other)
+     : power(other.power), position(other.position), species(other.species),
+       initiative(other.initiative), liveLength(other.liveLength),
+       powerToReproduce(other.powerToReproduce), initialPowerToReproduce(other.initialPowerToReproduce),
+       sign(other.sign), world(other.world), ancestorsHistory(other.ancestorsHistory) {}
+ 
+ Organism::Organism(Organism&& other) noexcept
+     : power(other.power), position(std::move(other.position)), species(std::move(other.species)),
+       initiative(other.initiative), liveLength(other.liveLength),
+       powerToReproduce(other.powerToReproduce), initialPowerToReproduce(other.initialPowerToReproduce),
+       sign(other.sign), world(other.world), ancestorsHistory(std::move(other.ancestorsHistory)) {}  // lub std::exchange(other.birthTurn, -1)
+ 
 int Organism::getPower() const {
     return power;
 }
@@ -104,4 +122,57 @@ void Organism::handleCollision(Organism* other) {
     } else {
         this->setPower(0);   // ja ginę
     }
+}
+
+
+Organism& Organism::operator=(const Organism& other) {
+    if (this != &other) {
+        power = other.power;
+        position = other.position;
+        species = other.species;
+        initiative = other.initiative;
+        liveLength = other.liveLength;
+        powerToReproduce = other.powerToReproduce;
+        initialPowerToReproduce = other.initialPowerToReproduce;
+        sign = other.sign;
+        world = other.world;
+        ancestorsHistory = other.ancestorsHistory;  // Kopiujemy historię przodków
+    }
+    return *this;
+}
+
+
+Organism& Organism::operator=(Organism&& other) noexcept {
+    if (this != &other) {
+        power = other.power;
+        position = std::move(other.position);
+        species = std::move(other.species);
+        initiative = other.initiative;
+        liveLength = other.liveLength;
+        powerToReproduce = other.powerToReproduce;
+        initialPowerToReproduce = other.initialPowerToReproduce;
+        sign = other.sign;
+        world = other.world;
+        ancestorsHistory = std::move(other.ancestorsHistory);  // Przenosimy historię przodków
+        // Po przeniesieniu obiektu, można ustawić dane "inne" na wartości domyślne
+        other.world = nullptr;
+        other.power = 0;
+        other.initiative = 0;
+        other.liveLength = 0;
+        other.powerToReproduce = 0;
+        other.sign = ' ';
+    }
+    return *this;
+}
+
+
+void Organism::addAncestor(int birthTurn, int deathTurn) {
+    ancestorsHistory.emplace_back(birthTurn, deathTurn);
+}
+
+const std::vector<Ancestor>& Organism::getAncestorsHistory() const {
+    return ancestorsHistory;
+}
+void Organism::setAncestorsHistory(const std::vector<Ancestor>& history) {
+    ancestorsHistory = history;
 }

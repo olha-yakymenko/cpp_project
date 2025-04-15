@@ -126,7 +126,10 @@ void Wolf::collision(Organism* other) {
         // Wilk spotyka innego wilka (można dodać odpowiednią reakcję, np. walka lub ignorowanie)
         std::cout << "Wolf at " << getPosition().toString() << " encounters another wolf!" << std::endl;
         // Można dodać inne reakcje na spotkanie z innym wilkiem, np. walkę
-    }
+    }else if (species == "Dandelion") {
+        std::cout << "Wolf at " << getPosition().toString() << " was eaten a dandelion!" << std::endl;
+        setLiveLength(getLiveLength()+1);  
+    } 
     else {
         // W przypadku innych organizmów, wilk nic nie robi
         std::cout << "Wolf at " << getPosition().toString() << " encounters " << species << ", but does nothing." << std::endl;
@@ -161,7 +164,9 @@ void Wolf::reproduce(Animal* partner) {
 
     // Stwórz potomka w jednej z wolnych pozycji
     Position childPos = freePositions[rand() % freePositions.size()];
-    Wolf* child = new Wolf(childPos, world);  // Zakładając, że masz odpowiednią metodę konstrukcji dla Wolf
+    Wolf* child = new Wolf(childPos, world); 
+    child->setAncestorsHistory(this->getAncestorsHistory());
+    child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());
     world->addOrganism(child);
     std::cout << "dziecko wilka" << child->getPosition().toString() << std::endl;
 

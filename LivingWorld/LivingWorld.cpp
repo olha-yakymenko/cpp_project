@@ -781,6 +781,7 @@ void populateWorld(World& world) {
 // Funkcja do renderowania organizmów
 void renderOrganisms(SDL_Renderer* renderer, World& world) {
     for (Organism* org : world.getOrganisms()) {
+        if (!org) continue; 
         if (org->getLiveLength() > 0) {
             Position pos = org->getPosition();
             SDL_Rect rect = {pos.getX() * CELL_SIZE, pos.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE};
@@ -840,16 +841,21 @@ int main() {
         SDL_RenderClear(renderer);
 
         // Wykonanie tur
-        for (int i = 0; i < MAX_TURNS; ++i) {
-            if (turnCount >= MAX_TURNS) {
-                quit = true;
-                break;
-            }
+        // for (int i = 0; i < MAX_TURNS; ++i) {
+        //     if (turnCount >= MAX_TURNS) {
+        //         quit = true;
+        //         break;
+        //     }
 
-            world.makeTurn(renderer);  // przekazujemy renderer
-            turnCount++;
-            cout << "Turn: " << turnCount << " Organisms: " << world.getOrganisms().size() << endl;
-        }
+        //     world.makeTurn(renderer);  // przekazujemy renderer
+        //     turnCount++;
+        //     cout << "Turn: " << turnCount << " Organisms: " << world.getOrganisms().size() << endl;
+        // }
+
+        world.makeTurn(renderer);
+        turnCount++;
+        cout << "Turn: " << turnCount << " Organisms: " << world.getOrganisms().size() << endl;
+
 
         if (quit) break;
 
@@ -857,7 +863,7 @@ int main() {
         renderOrganisms(renderer, world);
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(200);  // Opóźnienie dla lepszej widoczności zmian
+        SDL_Delay(100);  // Opóźnienie dla lepszej widoczności zmian
     }
 
     close(window, renderer);
