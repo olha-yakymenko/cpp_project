@@ -4,30 +4,26 @@
 #include <iostream>
 
 Toadstool::Toadstool(int power, Position position, World* world)
-    : Plant(0, position, world) {
-        setSpecies("Toadstool");
-        setInitiative(0);
-        setLiveLength(12);
-        setPowerToReproduce(4);
-        setSign('T');
+    : Plant(power, position, world) {
+    initialize();
 }
 
 Toadstool::Toadstool(int power, Position position, std::string species, World* world)
-    : Plant(0, position, world) {
-        setSpecies("Toadstool");
-        setInitiative(0);
-        setLiveLength(12);
-        setPowerToReproduce(4);
-        setSign('T');
+    : Plant(power, position, world) {
+    initialize();
 }
 
 Toadstool::Toadstool()
     : Plant(0, Position(0, 0), nullptr) {
-        setSpecies("Toadstool");
-        setInitiative(0);
-        setLiveLength(12);
-        setPowerToReproduce(4);
-        setSign('T');
+    initialize();
+}
+
+void Toadstool::initialize() {
+    setSpecies("Toadstool");
+    setInitiative(0);
+    setLiveLength(12);
+    setPowerToReproduce(4);
+    setSign('T');
 }
 
 void Toadstool::spread() {
@@ -112,4 +108,52 @@ void Toadstool::collision(Organism* attacker) {
         // Muchomor także umiera po zjedzeniu
         this->setLiveLength(0);  // Muchomor umiera po zjedzeniu
     }
+}
+
+
+Toadstool::Toadstool(const Toadstool& other)
+    : Plant(other) {
+    // Skopiuj wszystko co trzeba z `Plant`
+    setSpecies(other.getSpecies());
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+}
+
+Toadstool::Toadstool(Toadstool&& other) noexcept
+    : Plant(std::move(other)) {
+    setSpecies(std::move(other.getSpecies()));
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+}
+
+Toadstool& Toadstool::operator=(const Toadstool& other) {
+    if (this != &other) {
+        Plant::operator=(other);  // Kopiowanie z klasy bazowej
+        setSpecies(other.getSpecies());
+        setInitiative(other.getInitiative());
+        setLiveLength(other.getLiveLength());
+        setPowerToReproduce(other.getPowerToReproduce());
+        setSign(other.getSign());
+    }
+    return *this;
+}
+
+Toadstool& Toadstool::operator=(Toadstool&& other) noexcept {
+    if (this != &other) {
+        Plant::operator=(std::move(other));  // Przenoszenie z klasy bazowej
+        setSpecies(std::move(other.getSpecies()));
+        setInitiative(other.getInitiative());
+        setLiveLength(other.getLiveLength());
+        setPowerToReproduce(other.getPowerToReproduce());
+        setSign(other.getSign());
+    }
+    return *this;
+}
+
+Toadstool::~Toadstool() {
+    // jeśli coś dynamicznego byłoby w Toadstool, to tu byś to zwolnił
 }

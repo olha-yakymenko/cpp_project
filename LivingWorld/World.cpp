@@ -25,6 +25,104 @@ void World::addOrganism(Organism* organism) {
     }
 }
 
+// void World::makeTurn(SDL_Renderer* renderer) {
+//     std::vector<Position> newPositions;
+//     int numberOfNewPositions;
+//     int randomIndex;
+
+//     // Aktualizacja statystyk wszystkich organizmów
+//     for (Organism* org : organisms) {
+//         if (org && org->getLiveLength() > 0) {
+//             org->setPower(org->getPower() + 1);
+//             org->setLiveLength(org->getLiveLength() - 1);
+//         }
+//     }
+
+//     // Sortowanie organizmów wg inicjatywy i siły
+//     std::sort(organisms.begin(), organisms.end(), [](Organism* a, Organism* b) {
+//         if (a->getInitiative() != b->getInitiative())
+//             return a->getInitiative() > b->getInitiative();
+//         return a->getPower() > b->getPower();
+//     });
+
+//     // Pierwszy etap - ruch, rozprzestrzenianie, rozmnażanie
+//     for (Organism* org : organisms) {
+//         if (org == nullptr) {
+//             continue;  // Pomiń organizmy, które są null
+//         }
+//         if (org->getLiveLength() <= 0) continue;
+
+//         if (Animal* animal = dynamic_cast<Animal*>(org)) {
+//             // Znajdź potencjalnego partnera do rozmnażania
+//             Organism* partner = nullptr;
+//             for (Organism* other : organisms) {
+//                 if (other == animal || other->getLiveLength() <= 0) continue;
+//                 if (animal->getSpecies() == other->getSpecies() &&
+//                     abs(animal->getPosition().getX() - other->getPosition().getX()) <= 1 &&
+//                     abs(animal->getPosition().getY() - other->getPosition().getY()) <= 1) {
+//                     partner = other;
+//                     break;
+//                 }
+//             }
+
+//             // Rozmnażanie
+//             if (partner) {
+//                 animal->reproduce(dynamic_cast<Animal*>(partner));
+//             }
+
+//             // Ruch
+//             newPositions = getVectorOfFreePositionsAround(animal->getPosition());
+//             numberOfNewPositions = newPositions.size();
+
+//             if (numberOfNewPositions > 0) {
+//                 randomIndex = rand() % numberOfNewPositions;
+//                 int dx = newPositions[randomIndex].getX() - animal->getPosition().getX();
+//                 int dy = newPositions[randomIndex].getY() - animal->getPosition().getY();
+//                 animal->move(dx, dy);
+
+//                 // Sprawdzenie, czy zwierzę przeżyło po ruchu
+//                 if (animal->getLiveLength() <= 0) continue;
+//             }
+//         }
+//         else if (Plant* plant = dynamic_cast<Plant*>(org)) {
+//             if (plant->getLiveLength() > 0) {
+//                 plant->spread();
+//             }
+//         }
+//     }
+
+//     // Drugi etap - kolizje
+//     for (size_t i = 0; i < organisms.size(); ++i) {
+//         Organism* org1 = organisms[i];
+//         if (org1->getLiveLength() <= 0) continue;
+
+//         for (size_t j = i + 1; j < organisms.size(); ++j) {
+//             Organism* org2 = organisms[j];
+//             if (org2->getLiveLength() <= 0) continue;
+
+//             Position pos1 = org1->getPosition();
+//             Position pos2 = org2->getPosition();
+
+//             if ((pos1 == pos2) || (abs(pos1.getX() - pos2.getX()) <= 1 && abs(pos1.getY() - pos2.getY()) <= 1)) {
+//                 org1->collision(org2);
+//                 if (org1->getLiveLength() <= 0) break;  // Jeśli org1 umiera, przerwij
+//                 org2->collision(org1);  // Zrób kolizję w drugą stronę
+//                 if (org2->getLiveLength() <= 0) break;  // Jeśli org2 umiera, przerwij
+//             }
+//         }
+//     }
+
+//     // Trzeci etap - czyszczenie martwych organizmów
+//     removeDeadOrganisms();
+
+//     // Zwiększamy licznik tury
+//     turn++;
+
+//     // Rysowanie stanu świata na ekranie
+//     renderWorld(renderer);
+// }
+
+
 void World::makeTurn(SDL_Renderer* renderer) {
     std::vector<Position> newPositions;
     int numberOfNewPositions;
@@ -47,10 +145,9 @@ void World::makeTurn(SDL_Renderer* renderer) {
 
     // Pierwszy etap - ruch, rozprzestrzenianie, rozmnażanie
     for (Organism* org : organisms) {
-        if (org == nullptr) {
-            continue;  // Pomiń organizmy, które są null
+        if (org == nullptr || org->getLiveLength() <= 0) {
+            continue;  // Pomiń martwe organizmy
         }
-        if (org->getLiveLength() <= 0) continue;
 
         if (Animal* animal = dynamic_cast<Animal*>(org)) {
             // Znajdź potencjalnego partnera do rozmnażania

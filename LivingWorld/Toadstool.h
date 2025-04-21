@@ -11,4 +11,12 @@ public:
     Toadstool* clone() const override;
     std::string toString() const override;
     void collision(Organism* other) override;
+
+        // Rule of Five
+        Toadstool(const Toadstool& other);                  // konstruktor kopiujący
+        Toadstool(Toadstool&& other) noexcept;              // konstruktor przenoszący
+        Toadstool& operator=(const Toadstool& other);       // operator przypisania kopiujący
+        Toadstool& operator=(Toadstool&& other) noexcept;   // operator przypisania przenoszący
+        ~Toadstool();                                       // destruktor
+    
 };

@@ -65,44 +65,6 @@ Grass::Grass()
         setSign('G');
 }
 
-// void Grass::spread() {
-//     if (getLiveLength() <= 0) return;
-
-//     if (getWorld() == nullptr) {
-//         std::cerr << "trawa: World is not initialized!" << std::endl;
-//         return;
-//     }
-
-//     // Lista możliwych pozycji, na które trawa może się rozprzestrzenić
-//     std::vector<Position> adjacentPositions = {
-//         Position(getPosition().getX() - 1, getPosition().getY()), // Lewa
-//         Position(getPosition().getX() + 1, getPosition().getY()), // Prawa
-//         Position(getPosition().getX(), getPosition().getY() - 1), // Górna
-//         Position(getPosition().getX(), getPosition().getY() + 1)  // Dolna
-//     };
-
-//     // Iteracja po sąsiednich pozycjach
-//     for (auto& adjacentPos : adjacentPositions) {
-//         // Sprawdź, czy sąsiednia pozycja jest w obrębie planszy
-//         if (adjacentPos.isValid()) {
-//             // Sprawdź, czy na tej pozycji nie ma innego organizmu
-//             Organism* organismAtPos = getWorld()->getOrganismFromPosition(adjacentPos);
-
-//             // Jeśli nie ma organizmu lub jest inny organizm, rozprzestrzenić trawę
-//             if (organismAtPos == nullptr || dynamic_cast<Animal*>(organismAtPos)) {
-//                 // Jeśli pozycja jest wolna lub zajmowana przez inną trawę, rozprzestrzenić trawę
-//                 if (organismAtPos == nullptr) {
-//                     getWorld()->addOrganism(new Grass(3, adjacentPos, getWorld()));
-//                     std::cout << "Grass spread to position: " << adjacentPos.toString() << std::endl;
-//                 } else {
-//                     std::cout << "Grass tried to spread to position: " << adjacentPos.toString() << ", but it's already occupied by Grass." << std::endl;
-//                 }
-//                 break;  // Tylko jedna trawa rozprzestrzenia się w tej turze
-//             } 
-//         }
-//     }
-// }
-
 void Grass::spread() {
     if (getLiveLength() <= 0) return;
 
@@ -165,4 +127,51 @@ void Grass::collision(Organism* other) {
         this->setLiveLength(0);
         std::cout << "Grass was eaten by an animal." << std::endl;
     }
+}
+
+
+Grass::Grass(const Grass& other)
+    : Plant(other) {
+    setSpecies(other.getSpecies());
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+}
+
+Grass::Grass(Grass&& other) noexcept
+    : Plant(std::move(other)) {
+    setSpecies(std::move(other.getSpecies()));
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+}
+
+Grass& Grass::operator=(const Grass& other) { //operator przypisania kopiujacy
+    if (this != &other) {
+        Plant::operator=(other);
+        setSpecies(other.getSpecies());
+        setInitiative(other.getInitiative());
+        setLiveLength(other.getLiveLength());
+        setPowerToReproduce(other.getPowerToReproduce());
+        setSign(other.getSign());
+    }
+    return *this;
+}
+
+Grass& Grass::operator=(Grass&& other) noexcept { //operator przypisania przenoszacy
+    if (this != &other) {
+        Plant::operator=(std::move(other));
+        setSpecies(std::move(other.getSpecies()));
+        setInitiative(other.getInitiative());
+        setLiveLength(other.getLiveLength());
+        setPowerToReproduce(other.getPowerToReproduce());
+        setSign(other.getSign());
+    }
+    return *this;
+}
+
+Grass::~Grass() {
+    // Jeżeli kiedyś dodasz coś dynamicznego – obsłuż tutaj
 }

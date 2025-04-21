@@ -143,7 +143,8 @@ Organism& Organism::operator=(const Organism& other) {
         initialPowerToReproduce = other.initialPowerToReproduce;
         sign = other.sign;
         world = other.world;
-        ancestorsHistory = other.ancestorsHistory;  // Kopiujemy historię przodków
+        ancestorsHistory = other.ancestorsHistory; 
+        birthTurn = other.birthTurn;
     }
     return *this;
 }
@@ -161,6 +162,7 @@ Organism& Organism::operator=(Organism&& other) noexcept {
         sign = other.sign;
         world = other.world;
         ancestorsHistory = std::move(other.ancestorsHistory);  // Przenosimy historię przodków
+        birthTurn = other.birthTurn;
         // Po przeniesieniu obiektu, można ustawić dane "inne" na wartości domyślne
         other.world = nullptr;
         other.power = 0;
@@ -168,6 +170,7 @@ Organism& Organism::operator=(Organism&& other) noexcept {
         other.liveLength = 0;
         other.powerToReproduce = 0;
         other.sign = ' ';
+        other.birthTurn = 0;
     }
     return *this;
 }

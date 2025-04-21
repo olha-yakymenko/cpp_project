@@ -1,15 +1,3 @@
-// #pragma once
-// #include "Animal.h"
-
-// class Sheep : public Animal {
-// public:
-//     Sheep(Position position, World* world);
-//     Sheep();
-
-//     Animal* clone() const override;
-
-//     std::string toString() const override;
-// };
 
 
 #pragma once
@@ -32,4 +20,11 @@ public:
     Animal* createOffspring(Position pos) override;
     std::pair<int, int> findBestMove() override;
     void reproduce(Animal* partner) override;
+
+    ~Sheep();
+    Sheep(const Sheep& other);
+    Sheep(Sheep&& other) noexcept;
+    Sheep& operator=(const Sheep& other);        // operator przypisania kopiujący
+    Sheep& operator=(Sheep&& other) noexcept;    // operator przypisania przenoszący
+    
 };

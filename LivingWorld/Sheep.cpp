@@ -230,3 +230,55 @@ void Sheep::reproduce(Animal* partner) {
     this->setPower(this->getPower() / 2);
     partner->setPower(partner->getPower() / 2);
 }
+
+
+Sheep& Sheep::operator=(const Sheep& other) {
+    if (this != &other) {  // Sprawdzenie, czy nie przypisujemy do samego siebie
+        Animal::operator=(other);  // Kopiowanie danych z klasy bazowej
+        ancestorsHistory = other.ancestorsHistory;  // Kopiowanie historii przodków
+        setSpecies(other.getSpecies());
+        setInitiative(other.getInitiative());
+        setLiveLength(other.getLiveLength());
+        setPowerToReproduce(other.getPowerToReproduce());
+        setSign(other.getSign());
+    }
+    return *this;
+}
+
+// Operator przypisania przenoszącego
+Sheep& Sheep::operator=(Sheep&& other) noexcept {
+    if (this != &other) {  // Sprawdzenie, czy nie przypisujemy do samego siebie
+        Animal::operator=(std::move(other));  // Przenoszenie danych z klasy bazowej
+        ancestorsHistory = std::move(other.ancestorsHistory);  // Przenoszenie historii przodków
+        setSpecies(std::move(other.getSpecies()));
+        setInitiative(other.getInitiative());
+        setLiveLength(other.getLiveLength());
+        setPowerToReproduce(other.getPowerToReproduce());
+        setSign(other.getSign());
+    }
+    return *this;
+}
+
+Sheep::~Sheep() {
+    // Jeśli nie masz dynamicznych wskaźników — pusty wystarczy
+}
+
+Sheep::Sheep(const Sheep& other)
+    : Animal(other) {
+    ancestorsHistory = other.ancestorsHistory;
+    setSpecies(other.getSpecies());
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+}
+
+Sheep::Sheep(Sheep&& other) noexcept
+    : Animal(std::move(other)) {
+    ancestorsHistory = std::move(other.ancestorsHistory);
+    setSpecies(std::move(other.getSpecies()));
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+}

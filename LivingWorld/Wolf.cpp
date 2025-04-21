@@ -4,8 +4,7 @@
 #include "Sheep.h"
 #include "Grass.h"
 
-Wolf::Wolf(Position position, World* world)
-    : Animal(8, position, world) {
+void Wolf::initializeAttributes() {
     setSpecies("Wolf");
     setInitiative(5);
     setLiveLength(20);
@@ -13,27 +12,35 @@ Wolf::Wolf(Position position, World* world)
     setSign('W');
 }
 
+Wolf::Wolf(Position position, World* world)
+    : Animal(8, position, world) {
+    initializeAttributes();
+}
+
 Wolf::Wolf(int power, Position position, std::string species, World* world)
     : Animal(power, position, world) {
-        setSpecies("Wolf");
-        setInitiative(5);
-        setLiveLength(20);
-        setPowerToReproduce(16);
-        setSign('W');
+    initializeAttributes();
 }
 
 Wolf::Wolf()
     : Animal(3, Position(0, 0), nullptr) {
-        setSpecies("Wolf");
-        setInitiative(5);
-        setLiveLength(20);
-        setPowerToReproduce(16);
-        setSign('W');
+    initializeAttributes();
+}
+
+void Wolf::initializeAttributes() {
+    setSpecies("Wolf");
+    setInitiative(5);
+    setLiveLength(20);
+    setPowerToReproduce(16);
+    setSign('W');
 }
 
 Animal* Wolf::clone() const {
-    return new Wolf(*this);
+    Wolf* clonedWolf = new Wolf(*this);
+    clonedWolf->setAncestorsHistory(this->getAncestorsHistory()); // Przenosimy historię przodków
+    return clonedWolf;
 }
+
 
 std::string Wolf::toString() const {
     return "Wolf at (" + std::to_string(getPosition().getX()) + ", " + std::to_string(getPosition().getY()) + ")";
@@ -166,21 +173,50 @@ Animal* Wolf::createOffspring(Position pos) {
 }
 
 
+// void Wolf::reproduce(Animal* partner) {
+//     if (partner == nullptr) {
+//         std::cout << "WILKp" << std::endl;
+//         return;  // Jeśli partner jest nullptr, zakończ metodę
+//     }
+
+//     if (world == nullptr) {
+//         std::cout << "WILK" << std::endl;
+//         return;  // Jeśli partner jest nullptr, zakończ metodę
+//     }
+//     // Sprawdź, czy warunki rozmnażania są spełnione
+//     if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
+//         // Jeśli nie, wywołaj kolizję
+//         this->collision(partner);
+//         return;  // Zakończ metodę
+//     }
+
+//     // Znajdź wolne pole wokół wilka
+//     std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
+//     if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
+
+//     // Stwórz potomka w jednej z wolnych pozycji
+//     Position childPos = freePositions[rand() % freePositions.size()];
+//     Wolf* child = new Wolf(childPos, world); 
+//     child->setAncestorsHistory(this->getAncestorsHistory());
+//     child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());
+//     world->addOrganism(child);
+//     std::cout << "dziecko wilka" << child->getPosition().toString() << std::endl;
+
+//     // Osłabienie rodziców
+//     this->setPower(this->getPower() / 2);
+//     partner->setPower(partner->getPower() / 2);
+// }
+
+
 void Wolf::reproduce(Animal* partner) {
     if (partner == nullptr) {
-        std::cout << "WILKp" << std::endl;
         return;  // Jeśli partner jest nullptr, zakończ metodę
     }
 
-    if (world == nullptr) {
-        std::cout << "WILK" << std::endl;
-        return;  // Jeśli partner jest nullptr, zakończ metodę
-    }
     // Sprawdź, czy warunki rozmnażania są spełnione
     if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
-        // Jeśli nie, wywołaj kolizję
-        this->collision(partner);
-        return;  // Zakończ metodę
+        this->collision(partner);  // Zainicjuj kolizję, jeżeli warunki nie są spełnione
+        return;
     }
 
     // Znajdź wolne pole wokół wilka
@@ -189,13 +225,68 @@ void Wolf::reproduce(Animal* partner) {
 
     // Stwórz potomka w jednej z wolnych pozycji
     Position childPos = freePositions[rand() % freePositions.size()];
-    Wolf* child = new Wolf(childPos, world); 
-    child->setAncestorsHistory(this->getAncestorsHistory());
-    child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());
-    world->addOrganism(child);
-    std::cout << "dziecko wilka" << child->getPosition().toString() << std::endl;
+    Wolf* child = new Wolf(childPos, world);
+    child->setAncestorsHistory(this->getAncestorsHistory());  // Przenosimy historię przodków
+    child->addAncestor(this->getBirthTurn(), world->getCurrentTurn());  // Dodajemy przodków z rodzica
 
-    // Osłabienie rodziców
+    world->addOrganism(child);  // Dodajemy potomka do świata
+    std::cout << "Wilk o pozycji " << child->getPosition().toString() << " się narodził!" << std::endl;
+
+    // Osłabienie rodziców po rozmnażaniu
     this->setPower(this->getPower() / 2);
     partner->setPower(partner->getPower() / 2);
+}
+
+
+// Konstruktor kopiujący
+Wolf::Wolf(const Wolf& other)
+    : Animal(other) {  // Kopiujemy część Animal
+    setSpecies(other.getSpecies());
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+    setWorld(other.getWorld());
+    setPosition(other.getPosition());
+    setAncestorsHistory(other.getAncestorsHistory());  // Kopiowanie historii przodków
+}
+
+// Konstruktor przenoszący
+Wolf::Wolf(Wolf&& other) noexcept
+    : Animal(std::move(other)) {  // Przenosimy część Animal
+    setSpecies(std::move(other.getSpecies()));
+    setInitiative(other.getInitiative());
+    setLiveLength(other.getLiveLength());
+    setPowerToReproduce(other.getPowerToReproduce());
+    setSign(other.getSign());
+    setWorld(other.getWorld());
+    setPosition(other.getPosition());
+    setAncestorsHistory(std::move(other.getAncestorsHistory()));  // Przenosimy historię przodków
+
+    // Po przeniesieniu obiektu, warto wyzerować dane, by inne obiekty nie miały dostępu do tych samych zasobów
+    other.setWorld(nullptr);
+    other.setPower(0);
+    other.setInitiative(0);
+    other.setLiveLength(0);
+    other.setPowerToReproduce(0);
+    other.setSign(' ');
+}
+
+
+Wolf& Wolf::operator=(Wolf&& other) noexcept {
+    if (this != &other) {
+        Animal::operator=(std::move(other));  // Przenosimy część z Animal
+        setAncestorsHistory(std::move(other.getAncestorsHistory()));  // Przenosimy historię przodków
+        other.setAncestorsHistory({});  // Zerujemy historię u przenoszonego obiektu
+    }
+    return *this;
+}
+
+
+Wolf& Wolf::operator=(const Wolf& other) {
+    if (this != &other) {
+        Animal::operator=(other);  // Kopiujemy część Animal
+        setAncestorsHistory(other.getAncestorsHistory());  // Kopiujemy historię przodków
+    }
+    return *this;
 }

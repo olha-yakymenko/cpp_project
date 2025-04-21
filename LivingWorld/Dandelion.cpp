@@ -116,6 +116,7 @@ void Dandelion::spread() {
                 // Jeśli pozycja jest wolna, rozprzestrzenić trawę
                 getWorld()->addOrganism(new Dandelion(3, adjacentPos, getWorld()));
                 std::cout << "Dandelion spread to position: " << adjacentPos.toString() << std::endl;
+                setPower(getPower() / 2);
                 break;  // Tylko jedna trawa rozprzestrzenia się w tej turze
             } 
         }
@@ -149,5 +150,35 @@ void Dandelion::collision(Organism* other) {
         this->setLiveLength(0);  // Dandelion umiera
     }
     // Jeśli to nie jest owca, nie robimy nic
+}
+
+Dandelion::Dandelion(const Dandelion& other)
+    : Plant(other) {
+    initializeDandelion();
+}
+
+Dandelion::Dandelion(Dandelion&& other) noexcept
+    : Plant(std::move(other)) {
+    initializeDandelion();
+}
+
+Dandelion& Dandelion::operator=(const Dandelion& other) {
+    if (this != &other) {
+        Plant::operator=(other);
+        initializeDandelion();
+    }
+    return *this;
+}
+
+Dandelion& Dandelion::operator=(Dandelion&& other) noexcept {
+    if (this != &other) {
+        Plant::operator=(std::move(other));
+        initializeDandelion();
+    }
+    return *this;
+}
+
+Dandelion::~Dandelion() {
+    // Jeśli dodasz pola wymagające zwalniania pamięci – zadbaj o to tutaj
 }
 

@@ -14,4 +14,12 @@ public:
     private:
     void initializeDandelion();
 
+        // Rule of Five
+        Dandelion(const Dandelion& other);
+        Dandelion(Dandelion&& other) noexcept;
+        Dandelion& operator=(const Dandelion& other);
+        Dandelion& operator=(Dandelion&& other) noexcept;
+        ~Dandelion();
+    
+
 };
