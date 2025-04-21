@@ -12,7 +12,14 @@ Organism::Organism()
         initiative(initiative), liveLength(liveLength),
         powerToReproduce(powerToReproduce), initialPowerToReproduce(powerToReproduce),
         sign(sign), world(world) {
-            addAncestor(birthTurn, 0);
+            // addAncestor(birthTurn, 0);
+            if (world) {
+                birthTurn = world->getCurrentTurn();  
+            } else {
+                birthTurn = 0;  
+            }
+        
+            addAncestor(birthTurn, 0); 
         }
 
 

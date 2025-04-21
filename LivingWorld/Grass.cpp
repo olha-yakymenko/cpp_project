@@ -131,9 +131,11 @@ void Grass::spread() {
                 if (organismAtPos == nullptr) {
                     getWorld()->addOrganism(new Grass(3, adjacentPos, getWorld()));
                     std::cout << "Grass spread to position: " << adjacentPos.toString() << std::endl;
+                    setPower(getPower() / 2);
                 } else {
                     std::cout << "Grass tried to spread to position: " << adjacentPos.toString() << ", but it's already occupied by a plant." << std::endl;
                 }
+                
                 break;  // Tylko jedna trawa rozprzestrzenia się w tej turze
             }
         }

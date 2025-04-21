@@ -122,11 +122,36 @@ void Wolf::collision(Organism* other) {
         std::cout << "Wolf at " << getPosition().toString() << " eats poisonous mushroom and dies!" << other->getPosition().toString() << std::endl;
         setLiveLength(0);  // Wilk umiera po zjedzeniu trującego grzyba
     } 
+    // else if (species == "Wolf") {
+    //     // Wilk spotyka innego wilka (można dodać odpowiednią reakcję, np. walka lub ignorowanie)
+    //     std::cout << "Wolf at " << getPosition().toString() << " encounters another wolf!" << std::endl;
+    //     // Można dodać inne reakcje na spotkanie z innym wilkiem, np. walkę
+    // }
     else if (species == "Wolf") {
-        // Wilk spotyka innego wilka (można dodać odpowiednią reakcję, np. walka lub ignorowanie)
-        std::cout << "Wolf at " << getPosition().toString() << " encounters another wolf!" << std::endl;
-        // Można dodać inne reakcje na spotkanie z innym wilkiem, np. walkę
-    }else if (species == "Dandelion") {
+        // Wilk spotyka innego wilka
+        Wolf* otherWolf = dynamic_cast<Wolf*>(other);  // Sprawdzamy, czy drugi organizm to wilk
+        if (otherWolf != nullptr) {
+            std::cout << "Wolf at " << getPosition().toString() << " encounters another wolf!" << std::endl;
+
+            // Porównujemy siłę obu wilków
+            if (this->getPower() > otherWolf->getPower()) {
+                std::cout << "Wolf at " << getPosition().toString() << " defeats the other wolf!" << std::endl;
+                // Wilk wygrywa, przejmuje pozycję drugiego wilka
+                this->setPosition(otherWolf->getPosition());
+                otherWolf->setLiveLength(0);  // Przegrany wilk umiera
+            } else if (this->getPower() < otherWolf->getPower()) {
+                std::cout << "Wolf at " << otherWolf->getPosition().toString() << " defeats the first wolf!" << std::endl;
+                // Inny wilk wygrywa, ten przegrał i umiera
+                this->setLiveLength(0);  // Przegrany wilk umiera
+            } else {
+                // Jeżeli siła jest taka sama, obaj wilki umierają
+                std::cout << "Wolf at " << getPosition().toString() << " and wolf at " << otherWolf->getPosition().toString() << " are equally strong and both die!" << std::endl;
+                this->setLiveLength(0);  // Oba wilki umierają
+                otherWolf->setLiveLength(0);  // Drugi wilk również umiera
+            }
+        }
+    } 
+    else if (species == "Dandelion") {
         std::cout << "Wolf at " << getPosition().toString() << " was eaten a dandelion!" << std::endl;
         setLiveLength(getLiveLength()+1);  
     } 

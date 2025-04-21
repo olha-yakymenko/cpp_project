@@ -82,16 +82,34 @@ std::string Toadstool::toString() const {
     return "Toadstool at " + getPosition().toString();
 }
 
-void Toadstool::collision(Organism* attacker) {
-    if (getLiveLength() <= 0) return;
+// void Toadstool::collision(Organism* attacker) {
+//     if (getLiveLength() <= 0) return;
 
-    std::string species = attacker->getSpecies();
-    if (species == "Grass" or species=="Dandelion" or species=="Toadstool") {
+//     std::string species = attacker->getSpecies();
+//     if (species == "Grass" or species=="Dandelion" or species=="Toadstool") {
         
-    } else{
-    std::cout << attacker->toString() << " at position " << attacker->getPosition().toString()
-              << " ate a Toadstool!" << this->getPosition().toString() << std::endl;
-    this->setLiveLength(0); 
-    } // Muchomor umiera po zjedzeniu
+//     } else{
+//     std::cout << attacker->toString() << " at position " << attacker->getPosition().toString()
+//               << " ate a Toadstool!" << this->getPosition().toString() << std::endl;
+//     this->setLiveLength(0); 
+//     } // Muchomor umiera po zjedzeniu
+// }
+// // Sheep at (5, 1) at position (5, 1) ate a Toadstool!(5, 0)
+
+void Toadstool::collision(Organism* attacker) {
+    if (getLiveLength() <= 0) return;  // Jeżeli muchomor już nie żyje, nic się nie dzieje
+
+    std::string species = attacker->getSpecies();  // Sprawdzamy gatunek organizmu, który zjadł muchomora
+
+    // Jeśli atakujący to roślina (Trawa, Mlecz, Toadstool), nie dzieje się nic
+    if (species == "Grass" || species == "Dandelion" || species == "Toadstool") {
+        return;
+    } else {
+        // Jeżeli organizm zjada muchomora, niezależnie od siły umiera
+        std::cout << attacker->toString() << " at position " << attacker->getPosition().toString()
+                  << " ate a Toadstool at " << this->getPosition().toString() << " and dies!" << std::endl;
+
+        // Muchomor także umiera po zjedzeniu
+        this->setLiveLength(0);  // Muchomor umiera po zjedzeniu
+    }
 }
-// Sheep at (5, 1) at position (5, 1) ate a Toadstool!(5, 0)

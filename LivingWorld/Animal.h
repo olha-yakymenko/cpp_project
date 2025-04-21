@@ -31,32 +31,59 @@
 // };
 
 
+// #pragma once
+// #include "Organism.h"
+// #include <SDL2/SDL.h>
+
+// class Animal : public Organism {
+//     private:
+//     int x, yn, wcwidth, height; 
+// public:
+//     // Konstruktor z parametrami
+//     Animal(int power, Position position, World* world);
+    
+//     // Konstruktor domyślny
+//     Animal();
+    
+//     // Nadpisane metody wirtualne z klasy bazowej
+//     virtual void move(int dx, int dy) override;
+//     virtual void spread() override;
+//     virtual std::string toString() const override;
+//     void collision(Organism* other) override;
+//     virtual Animal* createOffspring(Position pos) = 0;
+//     virtual Animal* clone() const = 0;
+//     // virtual ~Animal() = default;
+//     virtual std::pair<int, int> findBestMove() = 0;
+//     virtual void reproduce(Animal* partner) = 0;
+
+//     void draw(SDL_Renderer* renderer) override;
+// protected:
+//     Position previousPosition;  // Zapamiętywanie poprzedniej pozycji
+// };
+
+
+
 #pragma once
 #include "Organism.h"
 #include <SDL2/SDL.h>
 
 class Animal : public Organism {
-    private:
-    int x, yn, wcwidth, height; 
 public:
-    // Konstruktor z parametrami
     Animal(int power, Position position, World* world);
-    
-    // Konstruktor domyślny
     Animal();
-    
-    // Nadpisane metody wirtualne z klasy bazowej
+
+    // Metody wirtualne
     virtual void move(int dx, int dy) override;
     virtual void spread() override;
     virtual std::string toString() const override;
-    void collision(Organism* other) override;
+    virtual void collision(Organism* other) override = 0;
     virtual Animal* createOffspring(Position pos) = 0;
     virtual Animal* clone() const = 0;
-    // virtual ~Animal() = default;
     virtual std::pair<int, int> findBestMove() = 0;
-    virtual void reproduce(Animal* partner) = 0;
+    virtual void reproduce(Animal* partner);
 
-    void draw(SDL_Renderer* renderer) override;
+    virtual void draw(SDL_Renderer* renderer) override;
+
 protected:
-    Position previousPosition;  // Zapamiętywanie poprzedniej pozycji
+    Position previousPosition;
 };

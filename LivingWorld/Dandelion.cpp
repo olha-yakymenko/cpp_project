@@ -55,6 +55,40 @@ void Dandelion::initializeDandelion() {
     setSign('D');
 }
 
+// void Dandelion::spread() {
+//     if (this->getLiveLength() <= 0) return;
+
+//     if (getWorld() == nullptr) {
+//         std::cerr << "World is not initialized!" << std::endl;
+//         return;
+//     }
+
+//     // Lista możliwych pozycji, na które trawa może się rozprzestrzenić
+//     std::vector<Position> adjacentPositions = {
+//         Position(getPosition().getX() - 1, getPosition().getY()), // Lewa
+//         Position(getPosition().getX() + 1, getPosition().getY()), // Prawa
+//         Position(getPosition().getX(), getPosition().getY() - 1), // Górna
+//         Position(getPosition().getX(), getPosition().getY() + 1)  // Dolna
+//     };
+
+//     // Iteracja po sąsiednich pozycjach
+//     for (auto& adjacentPos : adjacentPositions) {
+//         // Sprawdź, czy sąsiednia pozycja jest w obrębie planszy
+//         if (adjacentPos.isValid()) {
+//             // Sprawdź, czy na tej pozycji nie ma innego organizmu
+//             Organism* organismAtPos = getWorld()->getOrganismFromPosition(adjacentPos);
+
+//             if (organismAtPos == nullptr) {
+//                 // Jeśli pozycja jest wolna, rozprzestrzenić trawę
+//                 getWorld()->addOrganism(new Dandelion(3, adjacentPos, getWorld()));
+//                 std::cout << "Dandelion spread to position: " << adjacentPos.toString() << std::endl;
+//                 break;  // Tylko jedna trawa rozprzestrzenia się w tej turze
+//             } 
+//         }
+//     }
+// }
+
+
 void Dandelion::spread() {
     if (this->getLiveLength() <= 0) return;
 
@@ -87,7 +121,6 @@ void Dandelion::spread() {
         }
     }
 }
-
 
 Dandelion* Dandelion::clone() const {
    return new Dandelion(*this);
