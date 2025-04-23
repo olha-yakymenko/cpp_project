@@ -197,38 +197,38 @@ Animal* Sheep::createOffspring(Position pos) {
     return new Sheep(pos, world);  // zakładając że masz taki konstruktor
 }
 
-void Sheep::reproduce(Animal* partner) {
-    if (partner == nullptr) {
-        std::cout << "sheep p" << std::endl;
-        return;  // Jeśli partner jest nullptr, zakończ metodę
-    }
+// void Sheep::reproduce(Animal* partner) {
+//     if (partner == nullptr) {
+//         std::cout << "sheep p" << std::endl;
+//         return;  // Jeśli partner jest nullptr, zakończ metodę
+//     }
 
-    if (world == nullptr) {
-        std::cout << "sheep" << std::endl;
-        return;  // Jeśli partner jest nullptr, zakończ metodę
-    }
-    // Sprawdź, czy warunki rozmnażania są spełnione
-    if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
-        // Jeśli nie, wywołaj kolizję
-        this->collision(partner);
-        return;  // Zakończ metodę
-    }
+//     if (world == nullptr) {
+//         std::cout << "sheep" << std::endl;
+//         return;  // Jeśli partner jest nullptr, zakończ metodę
+//     }
+//     // Sprawdź, czy warunki rozmnażania są spełnione
+//     if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
+//         // Jeśli nie, wywołaj kolizję
+//         this->collision(partner);
+//         return;  // Zakończ metodę
+//     }
 
-    // Znajdź wolne pole wokół owcy
-    std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
-    if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
+//     // Znajdź wolne pole wokół owcy
+//     std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
+//     if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
 
-    // Stwórz potomka w jednej z wolnych pozycji
-    Position childPos = freePositions[rand() % freePositions.size()];
-    Sheep* child = new Sheep(childPos, world);
-    child->setAncestorsHistory(this->getAncestorsHistory());
-    child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());  // Zakładając, że masz odpowiednią metodę konstrukcji dla Sheep
-    world->addOrganism(child);
-    std::cout << "dziecko owcy" << child->getPosition().toString() << std::endl;
-    // Osłabienie rodziców
-    this->setPower(this->getPower() / 2);
-    partner->setPower(partner->getPower() / 2);
-}
+//     // Stwórz potomka w jednej z wolnych pozycji
+//     Position childPos = freePositions[rand() % freePositions.size()];
+//     Sheep* child = new Sheep(childPos, world);
+//     child->setAncestorsHistory(this->getAncestorsHistory());
+//     child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());  // Zakładając, że masz odpowiednią metodę konstrukcji dla Sheep
+//     world->addOrganism(child);
+//     std::cout << "dziecko owcy" << child->getPosition().toString() << std::endl;
+//     // Osłabienie rodziców
+//     this->setPower(this->getPower() / 2);
+//     partner->setPower(partner->getPower() / 2);
+// }
 
 
 Sheep& Sheep::operator=(const Sheep& other) {

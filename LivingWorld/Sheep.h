@@ -19,7 +19,7 @@ public:
     void collision(Organism* other) override;
     Animal* createOffspring(Position pos) override;
     std::pair<int, int> findBestMove() override;
-    void reproduce(Animal* partner) override;
+    // void reproduce(Animal* partner) override;
 
     ~Sheep();
     Sheep(const Sheep& other);

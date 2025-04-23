@@ -154,26 +154,57 @@ std::string Animal::toString() const {
     return species + " at (" + std::to_string(position.getX()) + ", " + std::to_string(position.getY()) + ")";
 }
 
+// void Animal::reproduce(Animal* partner) {
+//     if (!partner || !world) return;
+
+//     if (getPower() < getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
+//         collision(partner);  // np. może dojść do walki
+//         return;
+//     }
+
+//     std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(getPosition());
+
+//     if (freePositions.empty()) return;
+
+//     Position childPos = freePositions[rand() % freePositions.size()];
+
+//     Animal* child = createOffspring(childPos);
+//     if (child) {
+//         world->addOrganism(child);
+//     }
+
+//     setPower(getPower() / 2);
+//     partner->setPower(partner->getPower() / 2);
+// }
+
+
 void Animal::reproduce(Animal* partner) {
     if (!partner || !world) return;
 
-    if (getPower() < getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
-        collision(partner);  // np. może dojść do walki
+    if (this->getSpecies() != partner->getSpecies()) {
+        return;  // Nie rozmnażają się, jeśli gatunki są różne
+    }
+    
+
+    if (this->getPower() < this->getPowerToReproduce() ||
+        partner->getPower() < partner->getPowerToReproduce()) {
+        this->collision(partner); // domyślna reakcja
         return;
     }
 
-    std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(getPosition());
-
+    std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
     if (freePositions.empty()) return;
 
     Position childPos = freePositions[rand() % freePositions.size()];
+    Animal* child = this->createOffspring(childPos);  // używa wersji konkretnego gatunku
+    child->setBirthTurn(world->getCurrentTurn());
 
-    Animal* child = createOffspring(childPos);
-    if (child) {
-        world->addOrganism(child);
-    }
+    child->setAncestorsHistory(this->getAncestorsHistory());
+    child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());
 
-    setPower(getPower() / 2);
+    world->addOrganism(child);
+
+    this->setPower(this->getPower() / 2);
     partner->setPower(partner->getPower() / 2);
 }
 

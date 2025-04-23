@@ -28,6 +28,50 @@ Toadstool::Toadstool()
 }
 
 
+// void Toadstool::spread() {
+//     if (getLiveLength() <= 0) return;
+
+//     // Ustal, czy grzyb może się rozmnożyć, korzystając z metody getPowerToReproduce
+//     int powerToReproduce = this->getPowerToReproduce();  // Odczytanie granicy siły potrzebnej do rozmnożenia
+
+//     // Jeśli siła organizmu jest większa lub równa niż wymagane minimum, może się rozmnożyć
+//     if (getPower() >= powerToReproduce) {
+//         if (getWorld() == nullptr) {
+//             std::cerr << "Toadstool: World is not initialized!" << std::endl;
+//             return;
+//         }
+
+//         // Lista możliwych pozycji, na które grzyb może się rozprzestrzenić
+//         std::vector<Position> adjacentPositions = {
+//             Position(getPosition().getX() - 1, getPosition().getY()), // Lewa
+//             Position(getPosition().getX() + 1, getPosition().getY()), // Prawa
+//             Position(getPosition().getX(), getPosition().getY() - 1), // Górna
+//             Position(getPosition().getX(), getPosition().getY() + 1)  // Dolna
+//         };
+
+//         // Szukamy pierwszej wolnej komórki wśród sąsiednich pozycji
+//         for (auto& adjacentPos : adjacentPositions) {
+//             // Sprawdź, czy sąsiednia pozycja jest w obrębie planszy
+//             if (adjacentPos.isValid()) {
+//                 // Sprawdź, czy na tej pozycji nie ma innego organizmu
+//                 Organism* organismAtPos = getWorld()->getOrganismFromPosition(adjacentPos);
+
+//                 if (organismAtPos == nullptr) {
+//                     // Jeśli pozycja jest wolna, rozprzestrzenić grzyba
+//                     getWorld()->addOrganism(new Toadstool(3, adjacentPos, getWorld()));
+//                     std::cout << "Toadstool spread to position: " << adjacentPos.toString() << std::endl;
+
+//                     // Po rozmnożeniu grzyb traci połowę swojej siły
+//                     this->setPower(this->getPower() / 2);  // Traci połowę siły
+
+//                     break;  // Tylko jeden grzyb rozprzestrzenia się w tej turze
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
 void Toadstool::spread() {
     if (getLiveLength() <= 0) return;
 
@@ -58,7 +102,9 @@ void Toadstool::spread() {
 
                 if (organismAtPos == nullptr) {
                     // Jeśli pozycja jest wolna, rozprzestrzenić grzyba
-                    getWorld()->addOrganism(new Toadstool(3, adjacentPos, getWorld()));
+                    Toadstool* newToadstool = new Toadstool(3, adjacentPos, getWorld());
+                    newToadstool->setBirthTurn(getWorld()->getCurrentTurn());  // Ustawienie tury narodzin
+                    getWorld()->addOrganism(newToadstool);
                     std::cout << "Toadstool spread to position: " << adjacentPos.toString() << std::endl;
 
                     // Po rozmnożeniu grzyb traci połowę swojej siły
