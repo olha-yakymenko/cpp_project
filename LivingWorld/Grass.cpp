@@ -40,29 +40,25 @@
 
 Grass::Grass(int power, Position position, World* world)
     : Plant(power, position, world) {
-        setSpecies("Grass");
-        setInitiative(0);
-        setLiveLength(3);
-        setPowerToReproduce(3);
-        setSign('G');
+        initializeAttributes();
 }
 
 Grass::Grass(int power, Position position, std::string species, World* world)
     : Plant(power, position, world) {
-        setSpecies("Grass");
-        setInitiative(0);
-        setLiveLength(3);
-        setPowerToReproduce(3);
-        setSign('G');
+        initializeAttributes();
 }
 
 Grass::Grass()
     : Plant(3, Position(0, 0), nullptr) {
-        setSpecies("Grass");
-        setInitiative(0);
-        setLiveLength(3);
-        setPowerToReproduce(3);
-        setSign('G');
+        initializeAttributes();
+}
+
+void Grass::initializeAttributes() {
+    setSpecies("Grass");
+    setInitiative(0);
+    setLiveLength(3);
+    setPowerToReproduce(3);
+    setSign('G');
 }
 
 void Grass::spread() {

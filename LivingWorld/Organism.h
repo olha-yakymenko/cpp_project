@@ -278,8 +278,13 @@ int getBirthTurn() const { return birthTurn; }
 void setBirthTurn(int turn) { birthTurn = turn; }
 
 void addAncestor(int birthTurn, int deathTurn);
-    const std::vector<Ancestor>& getAncestorsHistory() const;
 
+void setDeathTurn(int deathTurn);
+const std::vector<Ancestor>& getAncestorsHistory() const;
+
+// Dodaj te deklaracje do pliku Organism.h
+int getDeathTurn() const;
+void updateAncestorDeathTurn();
 
 protected:
     int power;
@@ -294,5 +299,5 @@ protected:
 
     std::vector<Ancestor> ancestorsHistory;
     int birthTurn;
-
+    int deathTurn;
 };

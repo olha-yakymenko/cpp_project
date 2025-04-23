@@ -35,32 +35,31 @@
 #include <iostream>
 #include <cstdlib>
 
-Sheep::Sheep(Position position, World* world)
-    : Animal(3, position, world) {
+
+void Sheep::initializeAttributes() {
     setSpecies("Sheep");
     setInitiative(3);
     setLiveLength(10);
     setPowerToReproduce(6);
     setSign('S');
+}
+
+
+Sheep::Sheep(Position position, World* world)
+    : Animal(3, position, world) {
+    initializeAttributes();
 }
 
 Sheep::Sheep(int power, Position position, std::string species, World* world)
     : Animal(power, position, world) {
-    setSpecies(species);
-    setInitiative(3);
-    setLiveLength(10);
-    setPowerToReproduce(6);
-    setSign('S');
+    initializeAttributes();
 }
 
 Sheep::Sheep()
     : Animal(3, Position(0, 0), nullptr) {
-    setSpecies("Sheep");
-    setInitiative(3);
-    setLiveLength(10);
-    setPowerToReproduce(6);
-    setSign('S');
+    initializeAttributes();
 }
+
 
 Animal* Sheep::clone() const {
     return new Sheep(*this);  // Implementacja w pliku źródłowym

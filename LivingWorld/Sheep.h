@@ -26,5 +26,6 @@ public:
     Sheep(Sheep&& other) noexcept;
     Sheep& operator=(const Sheep& other);        // operator przypisania kopiujący
     Sheep& operator=(Sheep&& other) noexcept;    // operator przypisania przenoszący
-    
+private:
+    void initializeAttributes();
 };

@@ -27,13 +27,6 @@ Wolf::Wolf()
     initializeAttributes();
 }
 
-void Wolf::initializeAttributes() {
-    setSpecies("Wolf");
-    setInitiative(5);
-    setLiveLength(20);
-    setPowerToReproduce(16);
-    setSign('W');
-}
 
 Animal* Wolf::clone() const {
     Wolf* clonedWolf = new Wolf(*this);

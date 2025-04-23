@@ -17,6 +17,8 @@ public:
         Toadstool(Toadstool&& other) noexcept;              // konstruktor przenoszący
         Toadstool& operator=(const Toadstool& other);       // operator przypisania kopiujący
         Toadstool& operator=(Toadstool&& other) noexcept;   // operator przypisania przenoszący
-        ~Toadstool();                                       // destruktor
+        ~Toadstool();    
+        
+        void initializeAttributes();// destruktor
     
 };

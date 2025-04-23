@@ -54,4 +54,5 @@ public:
     Animal* createOffspring(Position pos) override;
     std::pair<int, int> findBestMove() override;
     void reproduce(Animal* partner) override;
+    void initializeAttributes();
 };

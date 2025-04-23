@@ -3,28 +3,30 @@
 #include "World.h"
 #include <iostream>
 
-Toadstool::Toadstool(int power, Position position, World* world)
-    : Plant(power, position, world) {
-    initialize();
-}
 
-Toadstool::Toadstool(int power, Position position, std::string species, World* world)
-    : Plant(power, position, world) {
-    initialize();
-}
-
-Toadstool::Toadstool()
-    : Plant(0, Position(0, 0), nullptr) {
-    initialize();
-}
-
-void Toadstool::initialize() {
+void Toadstool::initializeAttributes() {
     setSpecies("Toadstool");
     setInitiative(0);
     setLiveLength(12);
     setPowerToReproduce(4);
     setSign('T');
 }
+
+Toadstool::Toadstool(int power, Position position, World* world)
+    : Plant(power, position, world) {
+        initializeAttributes();
+}
+
+Toadstool::Toadstool(int power, Position position, std::string species, World* world)
+    : Plant(power, position, world) {
+        initializeAttributes();
+}
+
+Toadstool::Toadstool()
+    : Plant(0, Position(0, 0), nullptr) {
+        initializeAttributes();
+}
+
 
 void Toadstool::spread() {
     if (getLiveLength() <= 0) return;

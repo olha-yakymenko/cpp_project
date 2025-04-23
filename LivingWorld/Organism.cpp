@@ -176,6 +176,7 @@ Organism& Organism::operator=(Organism&& other) noexcept {
 }
 
 
+
 void Organism::addAncestor(int birthTurn, int deathTurn) {
     ancestorsHistory.emplace_back(birthTurn, deathTurn);
 }
@@ -185,4 +186,23 @@ const std::vector<Ancestor>& Organism::getAncestorsHistory() const {
 }
 void Organism::setAncestorsHistory(const std::vector<Ancestor>& history) {
     ancestorsHistory = history;
+}
+
+void Organism::setDeathTurn(int deathTurn) {
+    if (!ancestorsHistory.empty()) {
+        ancestorsHistory.back().deathTurn = deathTurn;
+    }
+}
+
+
+
+int Organism::getDeathTurn() const {
+    return deathTurn;
+}
+
+
+void Organism::updateAncestorDeathTurn() {
+    if (!ancestorsHistory.empty()) {
+        ancestorsHistory.back().deathTurn = world->getCurrentTurn();
+    }
 }

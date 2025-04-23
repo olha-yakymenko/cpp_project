@@ -33,6 +33,6 @@ public:
         Grass& operator=(Grass&& other) noexcept;   // Operator przypisania przenoszący
         ~Grass();                                   // Destruktor
     private:
-    void initDefaults();  // funkcja pomocnicza
+    void initializeAttributes();  // funkcja pomocnicza
 
 };

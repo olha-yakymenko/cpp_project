@@ -11,15 +11,16 @@ public:
     Dandelion* clone() const override;
     std::string toString() const override;
     void collision(Organism* other) override;
+            // Rule of Five
+            Dandelion(const Dandelion& other);
+            Dandelion(Dandelion&& other) noexcept;
+            Dandelion& operator=(const Dandelion& other);
+            Dandelion& operator=(Dandelion&& other) noexcept;
+            ~Dandelion();
     private:
-    void initializeDandelion();
+    void initializeAttributes();
 
-        // Rule of Five
-        Dandelion(const Dandelion& other);
-        Dandelion(Dandelion&& other) noexcept;
-        Dandelion& operator=(const Dandelion& other);
-        Dandelion& operator=(Dandelion&& other) noexcept;
-        ~Dandelion();
+
     
 
 };

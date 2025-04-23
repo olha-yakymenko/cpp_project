@@ -34,20 +34,20 @@
 
 Dandelion::Dandelion(int power, Position position, World* world)
     : Plant(0, position, world) {
-    initializeDandelion();  // Wywołanie funkcji pomocniczej
+        initializeAttributes();  // Wywołanie funkcji pomocniczej
 }
 
 Dandelion::Dandelion(int power, Position position, std::string species, World* world)
     : Plant(0, position, world) {
     setSpecies(species);  // Ustawienie konkretnego gatunku
-    initializeDandelion();  // Wywołanie funkcji pomocniczej
+    initializeAttributes();  // Wywołanie funkcji pomocniczej
 }
 
 Dandelion::Dandelion()
     : Plant(0, Position(0, 0), nullptr) {
-    initializeDandelion();  // Wywołanie funkcji pomocniczej
+        initializeAttributes();  // Wywołanie funkcji pomocniczej
 }
-void Dandelion::initializeDandelion() {
+void Dandelion::initializeAttributes() {
     setSpecies("Dandelion");
     setInitiative(0);
     setLiveLength(6);
@@ -154,18 +154,18 @@ void Dandelion::collision(Organism* other) {
 
 Dandelion::Dandelion(const Dandelion& other)
     : Plant(other) {
-    initializeDandelion();
+        initializeAttributes();
 }
 
 Dandelion::Dandelion(Dandelion&& other) noexcept
     : Plant(std::move(other)) {
-    initializeDandelion();
+        initializeAttributes();
 }
 
 Dandelion& Dandelion::operator=(const Dandelion& other) {
     if (this != &other) {
         Plant::operator=(other);
-        initializeDandelion();
+        initializeAttributes();
     }
     return *this;
 }
@@ -173,7 +173,7 @@ Dandelion& Dandelion::operator=(const Dandelion& other) {
 Dandelion& Dandelion::operator=(Dandelion&& other) noexcept {
     if (this != &other) {
         Plant::operator=(std::move(other));
-        initializeDandelion();
+        initializeAttributes();
     }
     return *this;
 }
