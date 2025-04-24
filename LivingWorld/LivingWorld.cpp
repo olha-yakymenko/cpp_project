@@ -898,9 +898,9 @@ const int CELL_SIZE = 15;
 const int GRID_WIDTH = SCREEN_WIDTH / CELL_SIZE;
 const int GRID_HEIGHT = SCREEN_HEIGHT / CELL_SIZE;
 
-const int FPS = 60;
+const int FPS = 1;
 const int FRAME_DELAY = 1000 / FPS;
-const int MAX_TURNS = 30;
+const int MAX_TURNS = 1000;
 
 // Funkcja do inicjalizacji SDL2
 bool init(SDL_Window*& window, SDL_Renderer*& renderer) {

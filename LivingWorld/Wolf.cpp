@@ -4,6 +4,7 @@
 #include "Sheep.h"
 #include "Grass.h"
 
+
 void Wolf::initializeAttributes() {
     setSpecies("Wolf");
     setInitiative(5);
@@ -121,6 +122,9 @@ void Wolf::collision(Organism* other) {
         // Wilk je trujące grzyby (jeśli tak założyliśmy w mechanice)
         std::cout << "Wolf at " << getPosition().toString() << " eats poisonous mushroom and dies!" << other->getPosition().toString() << std::endl;
         setLiveLength(0);  // Wilk umiera po zjedzeniu trującego grzyba
+        int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+
+        setDeathTurn(currentTurn);
     } 
     // else if (species == "Wolf") {
     //     // Wilk spotyka innego wilka (można dodać odpowiednią reakcję, np. walka lub ignorowanie)
@@ -143,11 +147,15 @@ void Wolf::collision(Organism* other) {
                 std::cout << "Wolf at " << otherWolf->getPosition().toString() << " defeats the first wolf!" << std::endl;
                 // Inny wilk wygrywa, ten przegrał i umiera
                 this->setLiveLength(0);  // Przegrany wilk umiera
+                int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+                setDeathTurn(currentTurn);
             } else {
                 // Jeżeli siła jest taka sama, obaj wilki umierają
                 std::cout << "Wolf at " << getPosition().toString() << " and wolf at " << otherWolf->getPosition().toString() << " are equally strong and both die!" << std::endl;
                 this->setLiveLength(0);  // Oba wilki umierają
                 otherWolf->setLiveLength(0);  // Drugi wilk również umiera
+                int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+                setDeathTurn(currentTurn);
             }
         }
     } 

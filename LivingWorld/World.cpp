@@ -134,6 +134,10 @@ void World::makeTurn(SDL_Renderer* renderer) {
             org->setPower(org->getPower() + 1);
             org->setLiveLength(org->getLiveLength() - 1);
         }
+
+        if (org->getLiveLength() <= 0 && org->getDeathTurn() == -1) {
+            org->setDeathTurn(turn);  // Ustawiamy turę śmierci na bieżącą turę
+        }
     }
 
     // Sortowanie organizmów wg inicjatywy i siły

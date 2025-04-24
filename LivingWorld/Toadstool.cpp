@@ -3,7 +3,6 @@
 #include "World.h"
 #include <iostream>
 
-
 void Toadstool::initializeAttributes() {
     setSpecies("Toadstool");
     setInitiative(0);
@@ -155,6 +154,9 @@ void Toadstool::collision(Organism* attacker) {
 
         // Muchomor także umiera po zjedzeniu
         this->setLiveLength(0);  // Muchomor umiera po zjedzeniu
+        int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+
+        setDeathTurn(currentTurn);
     }
 }
 

@@ -5,7 +5,6 @@
 #include "Sheep.h"
 
 
-
 Dandelion::Dandelion(int power, Position position, World* world)
     : Plant(0, position, world) {
         initializeAttributes();  // Wywołanie funkcji pomocniczej
@@ -85,6 +84,9 @@ void Dandelion::collision(Organism* other) {
     if (sheep != nullptr) {
         // Jeśli rzutowanie się udało, to znaczy, że "other" to obiekt typu "Sheep"
         this->setLiveLength(0);  // Dandelion umiera
+        int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+
+        setDeathTurn(currentTurn);
     }
     // Jeśli to nie jest owca, nie robimy nic
 }

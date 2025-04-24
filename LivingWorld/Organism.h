@@ -195,9 +195,8 @@ struct Ancestor {
   int deathTurn;
 
   // Default constructor
-  Ancestor() : birthTurn(0), deathTurn(0) {}
+  Ancestor() : birthTurn(0), deathTurn(-1) {}
 
-  // Constructor with parameters
   Ancestor(int birthTurn, int deathTurn)
       : birthTurn(birthTurn), deathTurn(deathTurn) {}
 };

@@ -115,8 +115,6 @@ public:
 	void setWorldX(int worldX);
 	int getWorldY();
 	void setWorldY(int worldY);
-
-	int getTurn();
 	
 	void addOrganism(Organism *organism);
 	vector<Position> getVectorOfFreePositionsAround(Position position);

@@ -35,7 +35,6 @@
 #include <iostream>
 #include <cstdlib>
 
-
 void Sheep::initializeAttributes() {
     setSpecies("Sheep");
     setInitiative(3);
@@ -115,9 +114,15 @@ void Sheep::collision(Organism* other) {
     } else if (species == "Toadstool") {
         std::cout << "Sheep at " << getPosition().toString() << " eats poisonous mushroom and dies!" << std::endl;
         setLiveLength(0);  // Owca umiera
+        int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+
+        setDeathTurn(currentTurn);
     } else if (species == "Wolf") {
         std::cout << "Sheep at " << getPosition().toString() << " was eaten by a wolf!" << std::endl;
         setLiveLength(0);  // Owca umiera
+        int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+
+        setDeathTurn(currentTurn);
     } else if (species == "Dandelion") {
         std::cout << "Sheep at " << getPosition().toString() << " was eaten a dandelion!" << std::endl;
         setLiveLength(getLiveLength()+1);  

@@ -38,6 +38,7 @@
 #include "Wolf.h"
 #include "Plant.h"
 
+
 Grass::Grass(int power, Position position, World* world)
     : Plant(power, position, world) {
         initializeAttributes();
@@ -164,6 +165,9 @@ void Grass::collision(Organism* other) {
     // Jeśli kolizja z organizmem zwierzęcym, Grass ginie
     if (dynamic_cast<Sheep*>(other)) {
         this->setLiveLength(0);
+        int currentTurn = world->getCurrentTurn();  // Użyj operatora '->', bo 'world' jest wskaźnikiem
+
+        setDeathTurn(currentTurn);
         std::cout << "Grass was eaten by an animal." << std::endl;
     }
 }
