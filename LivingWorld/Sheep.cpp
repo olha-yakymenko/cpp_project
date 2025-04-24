@@ -1,39 +1,10 @@
-// #include "Sheep.h"
-
-// Sheep::Sheep(Position position, World* world)
-//     : Animal(3, position, world) {
-//     this->setSpecies("Sheep");
-//     this->setInitiative(3);
-//     this->setLiveLength(10);
-//     this->setPowerToReproduce(6);
-//     this->setSign('S');
-// }
-
-// Sheep::Sheep()
-//     : Animal(3, Position(0, 0), nullptr) {
-//     this->setSpecies("Sheep");
-//     this->setInitiative(3);
-//     this->setLiveLength(10);
-//     this->setPowerToReproduce(6);
-//     this->setSign('S');
-// }
-
-// Animal* Sheep::clone() const {
-//     return new Sheep(*this);
-// }
-
-
-// std::string Sheep::toString() const {
-//     return "Sheep at (" + std::to_string(getPosition().getX()) + ", " + std::to_string(getPosition().getY()) + ")";
-// }
-
-
-
 #include "Sheep.h"
 #include "World.h"
 #include "Grass.h"
 #include <iostream>
 #include <cstdlib>
+
+extern const int CELL_SIZE;
 
 void Sheep::initializeAttributes() {
     setSpecies("Sheep");
@@ -69,37 +40,6 @@ std::string Sheep::toString() const {
     return "Sheep at (" + std::to_string(getPosition().getX()) + ", " + std::to_string(getPosition().getY()) + ")";
 }
 
-
-// void Sheep::move(int dx, int dy) {
-//     Position prevPos = getPosition();  // Zapamiętujemy poprzednią pozycję
-
-//     Position newPos = getPosition();
-//     newPos.move(dx, dy);  // Przemieszczamy owcę
-
-//     if (world != nullptr) {
-//         // Sprawdzamy, co jest na nowej pozycji
-//         Organism* organismAtNewPos = world->getOrganismFromPosition(newPos);
-//         std::cout << "jestem";
-//         // Dodajemy komunikat debugujący, który wyświetli gatunek organizmu na tej pozycji
-//         if (organismAtNewPos != nullptr) {
-//             std::cout << "Organism at " << newPos.toString() << ": " << organismAtNewPos->getSpecies() << std::endl;
-//         }
-
-//         if (organismAtNewPos != nullptr) {
-//             std::cout << organismAtNewPos->getSpecies() << "aaa";
-//         } else {
-//             std::cout << "No organism at this position" << std::endl;
-//         }
-        
-//         // Jeśli na nowej pozycji znajduje się trawa, to owca ją zjada
-//         if (organismAtNewPos != nullptr && organismAtNewPos->getSpecies() == "Grass") {
-//             std::cout << "Sheep at " << newPos.toString() << " eats grass!" << std::endl;
-//             world->removeOrganismAtPosition(newPos);  // Usuwamy trawę z planszy
-//         }
-//     }
-
-//     setPosition(newPos);  // Ustawiamy nową pozycję owcy
-// }
 
 void Sheep::collision(Organism* other) {
     if (getLiveLength() <= 0) return;
@@ -202,39 +142,6 @@ Animal* Sheep::createOffspring(Position pos) {
     return new Sheep(pos, world);  // zakładając że masz taki konstruktor
 }
 
-// void Sheep::reproduce(Animal* partner) {
-//     if (partner == nullptr) {
-//         std::cout << "sheep p" << std::endl;
-//         return;  // Jeśli partner jest nullptr, zakończ metodę
-//     }
-
-//     if (world == nullptr) {
-//         std::cout << "sheep" << std::endl;
-//         return;  // Jeśli partner jest nullptr, zakończ metodę
-//     }
-//     // Sprawdź, czy warunki rozmnażania są spełnione
-//     if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
-//         // Jeśli nie, wywołaj kolizję
-//         this->collision(partner);
-//         return;  // Zakończ metodę
-//     }
-
-//     // Znajdź wolne pole wokół owcy
-//     std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
-//     if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
-
-//     // Stwórz potomka w jednej z wolnych pozycji
-//     Position childPos = freePositions[rand() % freePositions.size()];
-//     Sheep* child = new Sheep(childPos, world);
-//     child->setAncestorsHistory(this->getAncestorsHistory());
-//     child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());  // Zakładając, że masz odpowiednią metodę konstrukcji dla Sheep
-//     world->addOrganism(child);
-//     std::cout << "dziecko owcy" << child->getPosition().toString() << std::endl;
-//     // Osłabienie rodziców
-//     this->setPower(this->getPower() / 2);
-//     partner->setPower(partner->getPower() / 2);
-// }
-
 
 Sheep& Sheep::operator=(const Sheep& other) {
     if (this != &other) {  // Sprawdzenie, czy nie przypisujemy do samego siebie
@@ -285,4 +192,16 @@ Sheep::Sheep(Sheep&& other) noexcept
     setLiveLength(other.getLiveLength());
     setPowerToReproduce(other.getPowerToReproduce());
     setSign(other.getSign());
+}
+
+
+void Sheep::draw(SDL_Renderer* renderer) {
+    Position pos = getPosition();
+    SDL_Rect rect = {pos.getX() * CELL_SIZE, pos.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Biały
+    SDL_RenderFillRect(renderer, &rect);
+
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    SDL_RenderDrawRect(renderer, &rect);
 }

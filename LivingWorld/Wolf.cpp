@@ -4,6 +4,7 @@
 #include "Sheep.h"
 #include "Grass.h"
 
+extern const int CELL_SIZE;
 
 void Wolf::initializeAttributes() {
     setSpecies("Wolf");
@@ -126,11 +127,7 @@ void Wolf::collision(Organism* other) {
 
         setDeathTurn(currentTurn);
     } 
-    // else if (species == "Wolf") {
-    //     // Wilk spotyka innego wilka (można dodać odpowiednią reakcję, np. walka lub ignorowanie)
-    //     std::cout << "Wolf at " << getPosition().toString() << " encounters another wolf!" << std::endl;
-    //     // Można dodać inne reakcje na spotkanie z innym wilkiem, np. walkę
-    // }
+
     else if (species == "Wolf") {
         // Wilk spotyka innego wilka
         Wolf* otherWolf = dynamic_cast<Wolf*>(other);  // Sprawdzamy, czy drugi organizm to wilk
@@ -172,71 +169,6 @@ void Wolf::collision(Organism* other) {
 Animal* Wolf::createOffspring(Position pos) {
     return new Wolf(pos, world);  // zakładając że masz taki konstruktor
 }
-
-
-// void Wolf::reproduce(Animal* partner) {
-//     if (partner == nullptr) {
-//         std::cout << "WILKp" << std::endl;
-//         return;  // Jeśli partner jest nullptr, zakończ metodę
-//     }
-
-//     if (world == nullptr) {
-//         std::cout << "WILK" << std::endl;
-//         return;  // Jeśli partner jest nullptr, zakończ metodę
-//     }
-//     // Sprawdź, czy warunki rozmnażania są spełnione
-//     if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
-//         // Jeśli nie, wywołaj kolizję
-//         this->collision(partner);
-//         return;  // Zakończ metodę
-//     }
-
-//     // Znajdź wolne pole wokół wilka
-//     std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
-//     if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
-
-//     // Stwórz potomka w jednej z wolnych pozycji
-//     Position childPos = freePositions[rand() % freePositions.size()];
-//     Wolf* child = new Wolf(childPos, world); 
-//     child->setAncestorsHistory(this->getAncestorsHistory());
-//     child->addAncestor(this->getBirthTurn(), this->getWorld()->getCurrentTurn());
-//     world->addOrganism(child);
-//     std::cout << "dziecko wilka" << child->getPosition().toString() << std::endl;
-
-//     // Osłabienie rodziców
-//     this->setPower(this->getPower() / 2);
-//     partner->setPower(partner->getPower() / 2);
-// }
-
-
-// void Wolf::reproduce(Animal* partner) {
-//     if (partner == nullptr) {
-//         return;  // Jeśli partner jest nullptr, zakończ metodę
-//     }
-
-//     // Sprawdź, czy warunki rozmnażania są spełnione
-//     if (this->getPower() < this->getPowerToReproduce() || partner->getPower() < partner->getPowerToReproduce()) {
-//         this->collision(partner);  // Zainicjuj kolizję, jeżeli warunki nie są spełnione
-//         return;
-//     }
-
-//     // Znajdź wolne pole wokół wilka
-//     std::vector<Position> freePositions = world->getVectorOfFreePositionsAround(this->getPosition());
-//     if (freePositions.empty()) return;  // Jeśli brak wolnych pozycji, zakończ rozmnażanie
-
-//     // Stwórz potomka w jednej z wolnych pozycji
-//     Position childPos = freePositions[rand() % freePositions.size()];
-//     Wolf* child = new Wolf(childPos, world);
-//     child->setAncestorsHistory(this->getAncestorsHistory());  // Przenosimy historię przodków
-//     child->addAncestor(this->getBirthTurn(), world->getCurrentTurn());  // Dodajemy przodków z rodzica
-
-//     world->addOrganism(child);  // Dodajemy potomka do świata
-//     std::cout << "Wilk o pozycji " << child->getPosition().toString() << " się narodził!" << std::endl;
-
-//     // Osłabienie rodziców po rozmnażaniu
-//     this->setPower(this->getPower() / 2);
-//     partner->setPower(partner->getPower() / 2);
-// }
 
 
 // Konstruktor kopiujący
@@ -290,4 +222,16 @@ Wolf& Wolf::operator=(const Wolf& other) {
         setAncestorsHistory(other.getAncestorsHistory());  // Kopiujemy historię przodków
     }
     return *this;
+}
+
+
+void Wolf::draw(SDL_Renderer* renderer) {
+    Position pos = getPosition();
+    SDL_Rect rect = {pos.getX() * CELL_SIZE, pos.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+
+    SDL_SetRenderDrawColor(renderer, 139, 0, 0, 255); // Czerwony
+    SDL_RenderFillRect(renderer, &rect);
+
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    SDL_RenderDrawRect(renderer, &rect);
 }

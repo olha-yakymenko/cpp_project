@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Sheep.h"
 
+extern const int CELL_SIZE;
 
 Dandelion::Dandelion(int power, Position position, World* world)
     : Plant(0, position, world) {
@@ -121,3 +122,14 @@ Dandelion::~Dandelion() {
     // Jeśli dodasz pola wymagające zwalniania pamięci – zadbaj o to tutaj
 }
 
+
+void Dandelion::draw(SDL_Renderer* renderer) {
+    Position pos = getPosition();
+    SDL_Rect rect = {pos.getX() * CELL_SIZE, pos.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // Żółty
+    SDL_RenderFillRect(renderer, &rect);
+
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    SDL_RenderDrawRect(renderer, &rect);
+}

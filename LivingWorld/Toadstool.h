@@ -20,5 +20,8 @@ public:
         ~Toadstool();    
         
         void initializeAttributes();// destruktor
+
+        void draw(SDL_Renderer* renderer) override;
+
     
 };

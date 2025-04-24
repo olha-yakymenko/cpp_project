@@ -26,6 +26,9 @@ public:
     Sheep(Sheep&& other) noexcept;
     Sheep& operator=(const Sheep& other);        // operator przypisania kopiujący
     Sheep& operator=(Sheep&& other) noexcept;    // operator przypisania przenoszący
+
+    void draw(SDL_Renderer* renderer) override;
+
 private:
     void initializeAttributes();
 };

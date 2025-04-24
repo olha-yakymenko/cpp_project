@@ -1,17 +1,3 @@
-// #pragma once
-// #include "Plant.h"
-
-// class Grass : public Plant {
-// public:
-//     Grass(int power, Position position, World* world);
-//     Grass();
-    
-//     void spread() override;
-//     Grass* clone() const override;
-//     std::string toString() const override;
-// };
-
-
 #pragma once
 #include "Plant.h"
 
@@ -32,7 +18,10 @@ public:
         Grass& operator=(const Grass& other);       // Operator przypisania kopiujący
         Grass& operator=(Grass&& other) noexcept;   // Operator przypisania przenoszący
         ~Grass();                                   // Destruktor
+
+        void draw(SDL_Renderer* renderer) override;
+
     private:
-    void initializeAttributes();  // funkcja pomocnicza
+    void initializeAttributes();  
 
 };

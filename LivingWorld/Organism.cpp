@@ -122,14 +122,6 @@ std::string Organism::toString() const {
     return species + " at (" + std::to_string(position.getX()) + "," + std::to_string(position.getY()) + ")";
 }
 
-void Organism::handleCollision(Organism* other) {
-    // Tymczasowa implementacja – np. walka o przetrwanie
-    if (this->getPower() >= other->getPower()) {
-        other->setPower(0);  // inne ginie
-    } else {
-        this->setPower(0);   // ja ginę
-    }
-}
 
 
 Organism& Organism::operator=(const Organism& other) {
